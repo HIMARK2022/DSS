@@ -373,19 +373,38 @@ public class DataProcessing {
 				
 			} else {
 				LinkedList<Manager> m_list = new LinkedList<Manager>();
-
+				close(m_pstmt, c_pstmt, m_rs, c_rs);
+				sql="truncate table manager";
+				m_pstmt = m_conn.prepareStatement(sql);
+				m_pstmt.executeUpdate();
+				
+				sql = "select A.user_id as '승인자아이디', B.user_id  as '승인대상' from (select u.user_id, de.dept_id from user as u left join dept as de on u.dept_id = de.upper_dept_id join duty as du on u.duty_id = du.duty_id where du.duty_name not in('사원')) as A join (select U.user_id, U.dept_id from user as u join (select de.dept_id from user as u left join dept as de on u.dept_id = de.upper_dept_id) as D on u.dept_id = D.dept_id join duty as du on u.duty_id = du.duty_id  where du.duty_name not in('사원') order by u.user_id ASC) as B on A.dept_id = B.dept_id union all select C.user_id, D.user_id from (select u.user_id, u.dept_id from user as u join duty as d on u.duty_id = d.duty_id where d.duty_name = '팀장') as C right join ( select u.user_id, u.dept_id from user as u join (select de.dept_id from user as u left join dept as de on u.dept_id = de.upper_dept_id) as D on u.dept_id = D.dept_id join duty as du on u.duty_id = du.duty_id where du.duty_name in('사원') order by u.user_id ASC) as D on C.dept_id = D.dept_id ;";
+				
+				m_pstmt = m_conn.prepareStatement(sql);
+				m_rs = m_pstmt.executeQuery();
+				
 				while (m_rs.next()) {
-					m_list.add(new Manager(m_rs.getString("manager_id"), m_rs.getString("approval_target"),
-							m_rs.getString("classify_target"), m_rs.getString("approval_start"),
-							m_rs.getString("approval_finish")));
+					m_list.add(new Manager(m_rs.getString("승인자아이디"),m_rs.getString("승인대상"),"T1",null,null));
 				}
 				
-				// 확인
-				System.out.println("마크애니 manager");
-				for (Manager manager : m_list) {
-					System.out.println(manager);
+				sql = "insert into manager(manager_id, approval_target, classify_target) values(?, ?, ?)";
+				m_pstmt = m_conn.prepareStatement(sql);
+				
+				for (int i = 0; i < m_list.size(); i++) {
+					m_pstmt.setString(1, m_list.get(i).getManagerId());
+					m_pstmt.setString(2, m_list.get(i).getApprovalTarget());
+					m_pstmt.setString(3, m_list.get(i).getClassifyTarget());
+					m_pstmt.addBatch();
+					m_pstmt.clearParameters();
+
+					// OutOfMemory를 고려하여 10,000건 단위로 insert
+					if ((i % 10000) == 0) {
+						m_pstmt.executeBatch();
+						m_pstmt.clearBatch();
+					}
 				}
-				System.out.println();
+				// 나머지 구문에 대해 insert
+				m_pstmt.executeBatch();
 				
 				// close
 				close(m_pstmt, c_pstmt, m_rs, c_rs);
