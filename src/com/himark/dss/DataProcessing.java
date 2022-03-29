@@ -41,6 +41,7 @@ public class DataProcessing {
 			if (tableName.equals("user")) {
 				LinkedList<User> m_list = new LinkedList<User>();
 				LinkedList<User> c_list = new LinkedList<User>();
+				LinkedList<Manager> manager_list = new LinkedList<Manager>();
 
 				while (m_rs.next()) {
 					m_list.add(new User(m_rs.getString("user_id"), m_rs.getString("user_name"),
@@ -55,12 +56,12 @@ public class DataProcessing {
 				}
 
 				// 확인
-				System.out.println("마크애니 user");
-				for (User user : m_list) {
-					System.out.println(user);
-				}
-				System.out.println();
-
+//				System.out.println("마크애니 user");
+//				for (User user : m_list) {
+//					System.out.println(user);
+//				}
+//				System.out.println();
+//
 				System.out.println("고객사 user");
 				for (User user : c_list) {
 					System.out.println(user);
@@ -93,7 +94,67 @@ public class DataProcessing {
 					System.out.println(user);
 				}
 				System.out.println();
+				
+				
+				//승인자리스트에 추가
+				for (int i = 0; i < leftJoinUser.size(); i++) {
+					sql ="select user_id from user "
+							+ "where dept_id = "
+							+ "(select upper_dept_id from user as u "
+							+ "join dept as de "
+							+ "where u.dept_id = de.dept_id "
+							+ "and u.authority_code in ('A2', 'A3') "
+							+ "and u.user_id = " + leftJoinUser.get(i).getUserId()+")";
+					
+					c_pstmt = c_conn.prepareStatement(sql);
+					c_rs = c_pstmt.executeQuery();
+					
+					while(c_rs.next()){
+						manager_list.add(new Manager(c_rs.getString("user_id"), leftJoinUser.get(i).getUserId(), "T1", null, null));
+					}
+					
+					sql ="select u0.user_id from user as u "
+							+ "join (select * from user where authority_code in ('A2')) as u0 on u.dept_id = u0.dept_id "
+							+ "join duty as du on u.duty_id = du.duty_id "
+							+ "where du.duty_name = '사원' "
+							+ "and u.user_id = " + leftJoinUser.get(i).getUserId();
+					
+					c_pstmt = c_conn.prepareStatement(sql);
+					c_rs = c_pstmt.executeQuery();
+					
+					while(c_rs.next()){
+						manager_list.add(new Manager(c_rs.getString("user_id"), leftJoinUser.get(i).getUserId(), "T1", null, null));
+					}
+				}
+				
+				sql = "insert into manager(manager_id, approval_target, classify_target) values(?, ?, ?)";
+				m_pstmt = m_conn.prepareStatement(sql);
+				
+				for (int i = 0; i < manager_list.size(); i++) {
+					m_pstmt.setString(1, manager_list.get(i).getManagerId());
+					m_pstmt.setString(2, manager_list.get(i).getApprovalTarget());
+					m_pstmt.setString(3, manager_list.get(i).getClassifyTarget());
+					m_pstmt.addBatch();
+					m_pstmt.clearParameters();
 
+					// OutOfMemory를 고려하여 10,000건 단위로 insert
+					if ((i % 10000) == 0) {
+						m_pstmt.executeBatch();
+						m_pstmt.clearBatch();
+					}
+				}
+				// 나머지 구문에 대해 insert
+				m_pstmt.executeBatch();
+				
+				// close
+				close(m_pstmt, c_pstmt, m_rs, c_rs);
+				
+				for (Manager u : manager_list) {
+					System.out.println(u);
+				}
+				System.out.println();
+				
+				
 				// 데이터 삽입
 				sql = "insert into user(user_id, user_password, user_name, pos_id, duty_id, dept_id, authority_code, current_state) values(?, ?, ?, ?, ?, ?, ?, ?)";
 				m_pstmt = m_conn.prepareStatement(sql);
@@ -117,6 +178,7 @@ public class DataProcessing {
 				}
 				// 나머지 구문에 대해 insert
 				m_pstmt.executeBatch();
+				
 				
 				
 				// Map에 고객사 데이터 넣기
@@ -301,7 +363,7 @@ public class DataProcessing {
 				// 나머지 구문에 대해 insert
 				m_pstmt.executeBatch();
 				
-			} else if (tableName.equals("pos")) {
+			} else {
 				LinkedList<Pos> m_list = new LinkedList<Pos>();
 				LinkedList<Pos> c_list = new LinkedList<Pos>();
 				
@@ -370,44 +432,6 @@ public class DataProcessing {
 				}
 				// 나머지 구문에 대해 insert
 				m_pstmt.executeBatch();
-				
-			} else {
-				LinkedList<Manager> m_list = new LinkedList<Manager>();
-				close(m_pstmt, c_pstmt, m_rs, c_rs);
-				sql="truncate table manager";
-				m_pstmt = m_conn.prepareStatement(sql);
-				m_pstmt.executeUpdate();
-				
-				sql = "select A.user_id as '승인자아이디', B.user_id  as '승인대상' from (select u.user_id, de.dept_id from user as u left join dept as de on u.dept_id = de.upper_dept_id join duty as du on u.duty_id = du.duty_id where du.duty_name not in('사원')) as A join (select U.user_id, U.dept_id from user as u join (select de.dept_id from user as u left join dept as de on u.dept_id = de.upper_dept_id) as D on u.dept_id = D.dept_id join duty as du on u.duty_id = du.duty_id  where du.duty_name not in('사원') order by u.user_id ASC) as B on A.dept_id = B.dept_id union all select C.user_id, D.user_id from (select u.user_id, u.dept_id from user as u join duty as d on u.duty_id = d.duty_id where d.duty_name = '팀장') as C right join ( select u.user_id, u.dept_id from user as u join (select de.dept_id from user as u left join dept as de on u.dept_id = de.upper_dept_id) as D on u.dept_id = D.dept_id join duty as du on u.duty_id = du.duty_id where du.duty_name in('사원') order by u.user_id ASC) as D on C.dept_id = D.dept_id ;";
-				
-				m_pstmt = m_conn.prepareStatement(sql);
-				m_rs = m_pstmt.executeQuery();
-				
-				while (m_rs.next()) {
-					m_list.add(new Manager(m_rs.getString("승인자아이디"),m_rs.getString("승인대상"),"T1",null,null));
-				}
-				
-				sql = "insert into manager(manager_id, approval_target, classify_target) values(?, ?, ?)";
-				m_pstmt = m_conn.prepareStatement(sql);
-				
-				for (int i = 0; i < m_list.size(); i++) {
-					m_pstmt.setString(1, m_list.get(i).getManagerId());
-					m_pstmt.setString(2, m_list.get(i).getApprovalTarget());
-					m_pstmt.setString(3, m_list.get(i).getClassifyTarget());
-					m_pstmt.addBatch();
-					m_pstmt.clearParameters();
-
-					// OutOfMemory를 고려하여 10,000건 단위로 insert
-					if ((i % 10000) == 0) {
-						m_pstmt.executeBatch();
-						m_pstmt.clearBatch();
-					}
-				}
-				// 나머지 구문에 대해 insert
-				m_pstmt.executeBatch();
-				
-				// close
-				close(m_pstmt, c_pstmt, m_rs, c_rs);
 				
 			}
 
