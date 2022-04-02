@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.himark.mapper.DeptMapper">
+
+	<resultMap type="com.himark.data.Dept" id="deptMap">
+		<result property="deptId" column="dept_id" />
+		<result property="deptName" column="dept_name" />
+		<result property="upperDeptId" column="upper_dept_id" />
+	</resultMap>
+
+	<select id="selectAll" resultMap="deptMap">
+		select 
+			dept_id, dept_name, upper_dept_id 
+		from dept
+	</select>
+
+</mapper>
