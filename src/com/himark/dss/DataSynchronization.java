@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.himark.data.Dept;
@@ -17,14 +18,6 @@ import com.himark.data.User;
 
 public class DataSynchronization {
 	public static void main(String[] args) {
-
-		// dept 테이블로 MyBatis 테스트
-//		DeptService deptService = new DeptService();
-//		List<Dept> deptList = deptService.select();
-//		
-//		for(Dept dept : deptList) {
-//			System.out.println(dept.getDeptId() + " " + dept.getDeptName() + " " + dept.getUpperDeptId());
-//		}
 		
 		// 프로퍼티 파일을 읽어서 저장할 리스트
 		List<String> properties = new ArrayList<String>();
@@ -54,10 +47,42 @@ public class DataSynchronization {
 		}
 		
 		// 리스트 확인
-		for(String s : properties) {
-			System.out.println(s);
+		/*
+		 * for(String s : properties) { System.out.println(s); }
+		 */
+		
+		// 고객사 DB 연결
+		Connection conn = DBConnection.getConnectivity(properties.get(2), properties.get(3), properties.get(4));
+		
+		// 고객사 데이터를 저장할 리스트 선언
+		List<User> userList = new LinkedList<>();
+		List<Pos> posList = new LinkedList<>();
+		List<Duty> dutyList = new LinkedList<>();
+		List<Dept> deptList = new LinkedList<>();
+		
+		// 고객사 데이터 리스트에 저장
+		userList = DataProcess.saveClientUser(conn, properties);
+		posList = DataProcess.saveClientPos(conn, properties);
+		dutyList = DataProcess.saveClientDuty(conn, properties);
+		deptList = DataProcess.saveClientDept(conn, properties);
+		
+		// 저장한 고객사 데이터 확인
+		for(User user : userList) {
+			System.out.println(user);
 		}
-				
+		
+		for(Pos pos : posList) {
+			System.out.println(pos);
+		}
+		
+		for(Duty duty : dutyList) {
+			System.out.println(duty);
+		}
+		
+		for(Dept dept : deptList) {
+			System.out.println(dept);
+		}
+			
 	}
 
 }
