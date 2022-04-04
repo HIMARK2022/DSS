@@ -12,18 +12,33 @@ public class DeptService {
 	
 	private DeptDAO deptDao = DeptDAO.getInstance();
 
-	public List<Dept> select() {
+//	public List<Dept> select() {
+//		SqlSession session = MySqlSessionFactory.getSqlSession();
+//		List<Dept> deptList = null; // 반환할 값
+//		
+//		try {
+//			deptList = deptDao.selectAll(session); // deptDao에 SqlSession 전송
+//		
+//		} finally {
+//			session.close(); // 세션 닫기
+//		}
+//		
+//		return deptList;
+//	}
+	
+	public int insertTemp(List<Dept> deptList) {
 		SqlSession session = MySqlSessionFactory.getSqlSession();
-		List<Dept> deptList = null; // 반환할 값
+		int insertCount = 0; // 반환할 값
 		
 		try {
-			deptList = deptDao.selectAll(session); // deptDao에 SqlSession 전송
-		
+			insertCount = deptDao.insertTemp(session, deptList); // deptDao에 SqlSession 전송
+			session.commit();
+			
 		} finally {
 			session.close(); // 세션 닫기
 		}
 		
-		return deptList;
+		return insertCount;
 	}
 	
 }

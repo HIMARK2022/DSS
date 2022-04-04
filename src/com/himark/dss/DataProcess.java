@@ -11,6 +11,10 @@ import com.himark.data.Dept;
 import com.himark.data.Duty;
 import com.himark.data.Pos;
 import com.himark.data.User;
+import com.himark.service.DeptService;
+import com.himark.service.DutyService;
+import com.himark.service.PosService;
+import com.himark.service.UserService;
 
 public class DataProcess {
 	
@@ -132,5 +136,34 @@ public class DataProcess {
 		
 		return deptList;
 	}
+	
+	// 고객사 데이터를 마크애니 DB의 temp 테이블에 저장
+	public static int saveTempUser(List<User> userList) {
+		UserService userService = new UserService();
+		int insertCount = userService.insertTemp(userList);
 		
+		return insertCount;
+	}
+	
+	public static int saveTempPos(List<Pos> posList) {
+		PosService posService = new PosService();
+		int insertCount = posService.insertTemp(posList);
+		
+		return insertCount;
+	}
+	
+	public static int saveTempDuty(List<Duty> dutyList) {
+		DutyService dutyService = new DutyService();
+		int insertCount = dutyService.insertTemp(dutyList);
+		
+		return insertCount;
+	}
+
+	public static int saveTempDept(List<Dept> deptList) {
+		DeptService deptService = new DeptService();
+		int insertCount = deptService.insertTemp(deptList);
+		
+		return insertCount;
+	}
+	
 }

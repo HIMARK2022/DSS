@@ -67,22 +67,27 @@ public class DataSynchronization {
 		deptList = DataProcess.saveClientDept(conn, properties);
 		
 		// 저장한 고객사 데이터 확인
-		for(User user : userList) {
-			System.out.println(user);
-		}
+		/*
+		 * for(User user : userList) { System.out.println(user); }
+		 * 
+		 * for(Pos pos : posList) { System.out.println(pos); }
+		 * 
+		 * for(Duty duty : dutyList) { System.out.println(duty); }
+		 * 
+		 * for(Dept dept : deptList) { System.out.println(dept); }
+		 */
 		
-		for(Pos pos : posList) {
-			System.out.println(pos);
-		}
+		// 고객사 데이터를 마크애니 DB의 temp 테이블에 저장
+		int userInsertCount = DataProcess.saveTempUser(userList);
+		int posInsertCount = DataProcess.saveTempPos(posList);
+		int dutyInsertCount = DataProcess.saveTempDuty(dutyList);
+		int deptInsertCount = DataProcess.saveTempDept(deptList);
 		
-		for(Duty duty : dutyList) {
-			System.out.println(duty);
-		}
+		System.out.println("temp_user에 insert한 개수: " + userInsertCount + "개");
+		System.out.println("temp_pos에 insert한 개수: " + posInsertCount + "개");
+		System.out.println("temp_duty에 insert한 개수: " + dutyInsertCount + "개");
+		System.out.println("temp_dept에 insert한 개수: " + deptInsertCount + "개");
 		
-		for(Dept dept : deptList) {
-			System.out.println(dept);
-		}
-			
 	}
 
 }
