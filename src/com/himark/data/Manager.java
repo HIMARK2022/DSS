@@ -1,6 +1,7 @@
 package com.himark.data;
 
 public class Manager {
+	private String companyName; // company_name
 	private String managerId; // manager_id
 	private String approvalTarget; // approval_target
 	private String classifyTarget; // classify_target
@@ -11,13 +12,23 @@ public class Manager {
 		
 	}
 
-	public Manager(String managerId, String approvalTarget, String classifyTarget, String approvalStart, String approvalFinish) {
+	public Manager(String companyName, String managerId, String approvalTarget, String classifyTarget,
+			String approvalStart, String approvalFinish) {
 		super();
+		this.companyName = companyName;
 		this.managerId = managerId;
 		this.approvalTarget = approvalTarget;
 		this.classifyTarget = classifyTarget;
 		this.approvalStart = approvalStart;
 		this.approvalFinish = approvalFinish;
+	}
+	
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
 	public String getManagerId() {
@@ -62,8 +73,9 @@ public class Manager {
 
 	@Override
 	public String toString() {
-		return "Manager [managerId=" + managerId + ", approvalTarget=" + approvalTarget + ", classifyTarget="
-				+ classifyTarget + ", approvalStart=" + approvalStart + ", approvalFinish=" + approvalFinish + "]";
+		return "Manager [approvalFinish=" + approvalFinish + ", approvalStart=" + approvalStart + ", approvalTarget="
+				+ approvalTarget + ", classifyTarget=" + classifyTarget + ", companyName=" + companyName
+				+ ", managerId=" + managerId + "]";
 	}
 	
 }

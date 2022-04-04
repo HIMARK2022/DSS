@@ -42,4 +42,17 @@ public class DutyService {
 		return deleteCount;
 	}
 	
+	public List<Duty> insertDuty() {
+		SqlSession session = MySqlSessionFactory.getSqlSession();
+		List<Duty> list = null; // 반환할 값
+		
+		try {
+			list = dutyDao.insertDuty(session); // dao에 SqlSession 전송
+		} finally {
+			session.close(); // 세션 닫기
+		}
+		
+		return list;
+	}
+	
 }

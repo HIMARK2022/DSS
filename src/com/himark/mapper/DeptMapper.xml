@@ -10,12 +10,6 @@
 		<result property="upperDeptId" column="upper_dept_id" />
 	</resultMap>
 
-	<!-- <select id="selectAll" resultMap="deptMap">
-		select 
-			dept_id, dept_name, upper_dept_id 
-		from dept
-	</select> -->
-
 	<insert id="insertTemp">
 		insert into temp_dept values
 		<foreach collection="list" item="item" separator=",">
@@ -26,5 +20,11 @@
 	<delete id="deleteTemp">
 		delete from temp_dept where company_name = #{companyName}
 	</delete>
+	
+	<insert id="insertDept">
+		insert into dept  
+			select company_name, dept_id, dept_name, upper_dept_id from temp_dept 
+			where dept_id not in (select dept_id from dept)
+	</insert>
 	
 </mapper>

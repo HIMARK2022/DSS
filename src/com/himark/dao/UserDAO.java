@@ -27,5 +27,17 @@ public class UserDAO {
 		
 		return deleteCount;
 	}
+
+	public List<User> insertUser(SqlSession session) {
+		List<User> list = session.selectList("insertUser"); 
+		
+		return list;
+	}
+
+	public List<User> selectUser(SqlSession session) {
+		List<User> list = session.selectList("selectUser");
+		
+		return list;
+	}
 	
 }

@@ -27,5 +27,11 @@ public class DutyDAO {
 		
 		return deleteCount;
 	}
+
+	public List<Duty> insertDuty(SqlSession session) { 
+		List<Duty> list = session.selectList("insertDuty"); 
+		
+		return list;
+	}
 	
 }

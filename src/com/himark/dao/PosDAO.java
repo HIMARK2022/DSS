@@ -27,5 +27,11 @@ public class PosDAO {
 		
 		return deleteCount;
 	}
+
+	public List<Pos> insertPos(SqlSession session) {
+		List<Pos> list = session.selectList("insertPos"); 
+		
+		return list;
+	}
 	
 }

@@ -41,5 +41,17 @@ public class PosService {
 		
 		return deleteCount;
 	}
+	public List<Pos> insertPos() {
+		SqlSession session = MySqlSessionFactory.getSqlSession();
+		List<Pos> list = null; // 반환할 값
+		
+		try {
+			list = posDao.insertPos(session); // dao에 SqlSession 전송
+		} finally {
+			session.close(); // 세션 닫기
+		}
+		
+		return list;
+	}
 	
 }

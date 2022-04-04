@@ -23,6 +23,7 @@
 		<mapper resource="com/himark/mapper/PosMapper.xml" /> 
 		<mapper resource="com/himark/mapper/DutyMapper.xml" />
 		<mapper resource="com/himark/mapper/DeptMapper.xml" />
+		<mapper resource="com/himark/mapper/ManagerMapper.xml" />
 	</mappers>
 		
 </configuration>

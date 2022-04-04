@@ -2,6 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="user">
+
+	<resultMap type="com.himark.data.User" id="userMap">
+		<result property="companyName" column="company_name" />
+		<result property="userId" column="user_id"/>
+		<result property="userName" column="user_name"/>
+		<result property="posId" column="pos_id"/>
+		<result property="dutyId" column="duty_id"/>
+		<result property="deptId" column="dept_id"/>
+		<result property="authorityCode" column="authority_code"/>
+	</resultMap>
 	
 	<insert id="insertTemp">
 		insert into temp_user values
@@ -14,5 +24,18 @@
 	<delete id="deleteTemp">
 		delete from temp_user where company_name = #{companyName}
 	</delete>
+	
+	<select id="selectUser" resultMap="userMap">
+		select user_id, user_name, pos_id, duty_id, dept_id, authority_code 
+		from temp_user 
+		where user_id not in (select user_id from user)
+	</select>
+	
+	<insert id="insertUser">
+		insert into user (company_name, user_id, user_password, user_name, pos_id, duty_id, dept_id, authority_code, current_state)
+			select company_name, user_id, user_id, user_name, pos_id, duty_id, dept_id, authority_code, '재직' 
+			from temp_user 
+			where user_id not in (select user_id from user)
+	</insert>
 	
 </mapper>

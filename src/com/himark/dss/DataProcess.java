@@ -13,6 +13,7 @@ import com.himark.data.Pos;
 import com.himark.data.User;
 import com.himark.service.DeptService;
 import com.himark.service.DutyService;
+import com.himark.service.ManagerService;
 import com.himark.service.PosService;
 import com.himark.service.UserService;
 
@@ -180,6 +181,36 @@ public class DataProcess {
 		int insertCount = deptService.insertTemp(deptList);
 		
 		return insertCount;
+	}
+	
+	public static void copyDept() {
+		DeptService service = new DeptService();
+		service.insertDept();
+	}
+	
+	public static void copyDuty() {
+		DutyService service = new DutyService();
+		service.insertDuty();
+	}
+	
+	public static void copyPos() {
+		PosService service = new PosService();
+		service.insertPos();
+	}
+	
+	public static void copyUser() {
+		UserService service = new UserService();
+		service.insertUser();
+	}
+	
+	public static void setApprover() {
+		UserService service = new UserService();
+		ManagerService service_manager = new ManagerService();
+		List<User> list = service.selectUser();
+		
+		for(User user : list) {
+			service_manager.setApprover(user.getUserId());
+		}
 	}
 	
 }

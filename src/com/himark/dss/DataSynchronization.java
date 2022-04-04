@@ -88,6 +88,13 @@ public class DataSynchronization {
 		System.out.println("temp_duty에 insert한 개수: " + dutyInsertCount + "개");
 		System.out.println("temp_dept에 insert한 개수: " + deptInsertCount + "개");
 		
+		DataProcess.copyDept();
+		DataProcess.copyDuty();
+		DataProcess.copyPos();
+		DataProcess.setApprover();
+		DataProcess.copyUser();
+		
+		
 	}
 
 }

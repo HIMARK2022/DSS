@@ -2,6 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="pos">
+
+	<resultMap type="com.himark.data.Pos" id="posMap">
+		<result property="companyName" column="company_name" />
+		<result property="posId" column="pos_id"/>
+		<result property="posName" column="pos_name"/>
+	</resultMap>
 	
 	<insert id="insertTemp">
 		insert into temp_pos values
@@ -13,5 +19,11 @@
 	<delete id="deleteTemp">
 		delete from temp_pos where company_name = #{companyName}
 	</delete>
+	
+	<insert id="insertPos">
+		insert into pos  
+			select company_name, pos_id, pos_name from temp_pos 
+			where pos_id not in (select pos_id from pos)
+	</insert>
 	
 </mapper>

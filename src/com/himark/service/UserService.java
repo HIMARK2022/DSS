@@ -41,5 +41,31 @@ public class UserService {
 		
 		return deleteCount;
 	}
+	public  List<User> insertUser() {
+		SqlSession session = MySqlSessionFactory.getSqlSession();
+		List<User> list = null; // 반환할 값
+		
+		try {
+			list = userDao.insertUser(session); // dao에 SqlSession 전송
+		} finally {
+			session.close(); // 세션 닫기
+		}
+		
+		return list;
+		
+	}
+	
+	public List<User> selectUser() {
+		SqlSession session = MySqlSessionFactory.getSqlSession();
+		List<User> list = null; // 반환할 값
+		
+		try {
+			list = userDao.selectUser(session); // dao에 SqlSession 전송
+		} finally {
+			session.close(); // 세션 닫기
+		}
+		
+		return list;
+	}
 	
 }

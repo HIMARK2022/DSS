@@ -14,12 +14,6 @@ public class DeptDAO {
 		return deptDao;
 	}
 	
-//	public List<Dept> selectAll(SqlSession session) { 
-//		List<Dept> deptList = session.selectList("selectAll"); 
-//		
-//		return deptList;
-//	}
-	
 	public int insertTemp(SqlSession session, List<Dept> deptList) {
 		int insertCount = 0; 
 		insertCount = session.insert("dept.insertTemp", deptList);
@@ -27,11 +21,19 @@ public class DeptDAO {
 		return insertCount;
 	}
 	
+
 	public int deleteTemp(SqlSession session, String companyName) {
 		int deleteCount = 0; 
 		deleteCount = session.delete("dept.deleteTemp", companyName);
 		
 		return deleteCount;
+	}
+
+	public List<Dept> insertDept(SqlSession session) { 
+		List<Dept> list = session.selectList("insertDept"); 
+		
+		return list;
+
 	}
 	
 }

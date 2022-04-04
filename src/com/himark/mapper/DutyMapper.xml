@@ -3,6 +3,12 @@
 
 <mapper namespace="duty">
 
+	<resultMap type="com.himark.data.Duty" id="dutyMap">
+		<result property="companyName" column="company_name"/>
+		<result property="dutyId" column="duty_id"/>
+		<result property="dutyName" column="duty_name"/>
+	</resultMap>
+
 	<insert id="insertTemp">
 		insert into temp_duty values
 		<foreach collection="list" item="item" separator=",">
@@ -13,5 +19,11 @@
 	<delete id="deleteTemp">
 		delete from temp_duty where company_name = #{companyName}
 	</delete>
+	
+	<insert id="insertDuty">
+		insert into duty 
+			select company_name, duty_id, duty_name from temp_duty 
+			where duty_id not in (select duty_id from duty)
+	</insert>
 	
 </mapper>
