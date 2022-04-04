@@ -140,6 +140,10 @@ public class DataProcess {
 	// 고객사 데이터를 마크애니 DB의 temp 테이블에 저장
 	public static int saveTempUser(List<User> userList) {
 		UserService userService = new UserService();
+		
+		int deleteCount = userService.deleteTemp(userList.get(0).getCompanyName());
+		System.out.println(deleteCount + "건이 temp_user에서 삭제되었습니다.");
+		
 		int insertCount = userService.insertTemp(userList);
 		
 		return insertCount;
@@ -147,6 +151,10 @@ public class DataProcess {
 	
 	public static int saveTempPos(List<Pos> posList) {
 		PosService posService = new PosService();
+		
+		int deleteCount = posService.deleteTemp(posList.get(0).getCompanyName());
+		System.out.println(deleteCount + "건이 temp_pos에서 삭제되었습니다.");
+		
 		int insertCount = posService.insertTemp(posList);
 		
 		return insertCount;
@@ -154,6 +162,10 @@ public class DataProcess {
 	
 	public static int saveTempDuty(List<Duty> dutyList) {
 		DutyService dutyService = new DutyService();
+		
+		int deleteCount = dutyService.deleteTemp(dutyList.get(0).getCompanyName());
+		System.out.println(deleteCount + "건이 temp_duty에서 삭제되었습니다.");
+		
 		int insertCount = dutyService.insertTemp(dutyList);
 		
 		return insertCount;
@@ -161,6 +173,10 @@ public class DataProcess {
 
 	public static int saveTempDept(List<Dept> deptList) {
 		DeptService deptService = new DeptService();
+		
+		int deleteCount = deptService.deleteTemp(deptList.get(0).getCompanyName());
+		System.out.println(deleteCount + "건이 temp_dept에서 삭제되었습니다.");
+		
 		int insertCount = deptService.insertTemp(deptList);
 		
 		return insertCount;

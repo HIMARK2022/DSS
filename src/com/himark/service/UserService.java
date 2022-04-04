@@ -27,4 +27,19 @@ public class UserService {
 		return insertCount;
 	}
 	
+	public int deleteTemp(String companyName) {
+		SqlSession session = MySqlSessionFactory.getSqlSession();
+		int deleteCount = 0;
+		
+		try {
+			deleteCount = userDao.deleteTemp(session, companyName);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return deleteCount;
+	}
+	
 }

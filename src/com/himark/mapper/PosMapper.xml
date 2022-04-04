@@ -10,4 +10,8 @@
 		</foreach>
 	</insert>
 	
+	<delete id="deleteTemp">
+		delete from temp_pos where company_name = #{companyName}
+	</delete>
+	
 </mapper>

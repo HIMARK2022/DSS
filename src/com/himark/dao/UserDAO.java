@@ -20,4 +20,12 @@ public class UserDAO {
 		
 		return insertCount;
 	}
+	
+	public int deleteTemp(SqlSession session, String companyName) {
+		int deleteCount = 0; 
+		deleteCount = session.delete("user.deleteTemp", companyName);
+		
+		return deleteCount;
+	}
+	
 }

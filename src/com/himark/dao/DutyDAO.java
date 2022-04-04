@@ -20,4 +20,12 @@ public class DutyDAO {
 		
 		return insertCount;
 	}
+	
+	public int deleteTemp(SqlSession session, String companyName) {
+		int deleteCount = 0; 
+		deleteCount = session.delete("duty.deleteTemp", companyName);
+		
+		return deleteCount;
+	}
+	
 }

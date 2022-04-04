@@ -26,4 +26,20 @@ public class DutyService {
 		
 		return insertCount;
 	}
+	
+	public int deleteTemp(String companyName) {
+		SqlSession session = MySqlSessionFactory.getSqlSession();
+		int deleteCount = 0;
+		
+		try {
+			deleteCount = dutyDao.deleteTemp(session, companyName);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return deleteCount;
+	}
+	
 }

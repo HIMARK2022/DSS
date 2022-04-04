@@ -27,4 +27,11 @@ public class DeptDAO {
 		return insertCount;
 	}
 	
+	public int deleteTemp(SqlSession session, String companyName) {
+		int deleteCount = 0; 
+		deleteCount = session.delete("dept.deleteTemp", companyName);
+		
+		return deleteCount;
+	}
+	
 }

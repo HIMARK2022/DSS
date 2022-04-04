@@ -20,4 +20,12 @@ public class PosDAO {
 		
 		return insertCount;
 	}
+	
+	public int deleteTemp(SqlSession session, String companyName) {
+		int deleteCount = 0; 
+		deleteCount = session.delete("pos.deleteTemp", companyName);
+		
+		return deleteCount;
+	}
+	
 }
