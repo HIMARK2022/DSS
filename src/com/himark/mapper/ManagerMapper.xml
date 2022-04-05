@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="manager">
+
+	<resultMap type="com.himark.data.Manager" id="managerMap">
+		<result property="companyName" column="company_name" />
+		<result property="managerId" column="manager_id"/>
+		<result property="approvalTarget" column="approval_target"/>
+		<result property="classifyTarget" column="classify_target"/>
+		<result property="approvalStart" column="approval_start"/>
+		<result property="approvalFinish" column="approval_finish"/>
+	</resultMap>
+	
+	<insert id="setApprover">
+		insert into manager(company_name, manager_id, approval_target)
+			select distinct 
+				t.company_name,
+				case authority_code
+					when 'A1' then (select user_id from temp_user as u1 
+									where authority_code = 'A2' and u1.dept_id = t.dept_id)
+					when 'A2' then (select distinct user_id from temp_user as u2
+									join dept on u2.dept_id = dept.upper_dept_id
+									where authority_code = 'A2' and dept.dept_id = d.dept_id)
+			    end as 'manager_id',
+			    user_id
+			from temp_user as t
+			join dept as d on t.dept_id = d.dept_id
+			where t.authority_code !='A3' and t.user_id = #{approval_target}
+	</insert>
+	
+</mapper>

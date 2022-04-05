@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="dept">
+
+	<resultMap type="com.himark.data.Dept" id="deptMap">
+		<result property="companyName" column="company_name" />
+		<result property="deptId" column="dept_id" />
+		<result property="deptName" column="dept_name" />
+		<result property="upperDeptId" column="upper_dept_id" />
+	</resultMap>
+
+	<insert id="insertTemp">
+		insert into temp_dept values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.companyName}, #{item.deptId}, #{item.deptName}, #{item.upperDeptId})				
+		</foreach>
+	</insert>
+	
+	<delete id="deleteTemp">
+		delete from temp_dept where company_name = #{companyName}
+	</delete>
+	
+	<insert id="insertDept">
+		insert into dept  
+			select company_name, dept_id, dept_name, upper_dept_id from temp_dept 
+			where dept_id not in (select dept_id from dept)
+	</insert>
+	
+</mapper>
