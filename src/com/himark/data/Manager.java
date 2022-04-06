@@ -1,34 +1,26 @@
 package com.himark.data;
 
 public class Manager {
-	private String companyName; // company_name
 	private String managerId; // manager_id
 	private String approvalTarget; // approval_target
 	private String classifyTarget; // classify_target
 	private String approvalStart; // approval_start
 	private String approvalFinish; // approval_finish
+	private String tempManager; // temp_manager
 	
 	public Manager() {
 		
 	}
-
-	public Manager(String companyName, String managerId, String approvalTarget, String classifyTarget,
-			String approvalStart, String approvalFinish) {
+	
+	public Manager(String managerId, String approvalTarget, String classifyTarget, String approvalStart,
+			String approvalFinish, String tempManager) {
 		super();
-		this.companyName = companyName;
 		this.managerId = managerId;
 		this.approvalTarget = approvalTarget;
 		this.classifyTarget = classifyTarget;
 		this.approvalStart = approvalStart;
 		this.approvalFinish = approvalFinish;
-	}
-	
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
+		this.tempManager = tempManager;
 	}
 
 	public String getManagerId() {
@@ -71,11 +63,19 @@ public class Manager {
 		this.approvalFinish = approvalFinish;
 	}
 
+	public String getTempManager() {
+		return tempManager;
+	}
+
+	public void setTempManager(String tempManager) {
+		this.tempManager = tempManager;
+	}
+
 	@Override
 	public String toString() {
-		return "Manager [approvalFinish=" + approvalFinish + ", approvalStart=" + approvalStart + ", approvalTarget="
-				+ approvalTarget + ", classifyTarget=" + classifyTarget + ", companyName=" + companyName
-				+ ", managerId=" + managerId + "]";
+		return "Manager [managerId=" + managerId + ", approvalTarget=" + approvalTarget + ", classifyTarget="
+				+ classifyTarget + ", approvalStart=" + approvalStart + ", approvalFinish=" + approvalFinish
+				+ ", tempManager=" + tempManager + "]";
 	}
 	
 }

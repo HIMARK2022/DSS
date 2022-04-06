@@ -157,14 +157,14 @@ public class DataProcess {
 		return insertCount;
 	}
 	
-	public static int setApprover() {
+	public static int insertManager() {
 		UserService service = new UserService();
 		ManagerService service_manager = new ManagerService();
 		List<User> list = service.selectUser();
 		int insertCount = 0;
 		
 		for(User user : list) {
-			insertCount = service_manager.setApprover(user.getUserId());
+			insertCount = service_manager.insertManager(user.getUserId());
 		}
 		
 		return insertCount;

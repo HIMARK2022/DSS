@@ -1,10 +1,7 @@
 package com.himark.dao;
 
-import java.util.List;
-
 import org.apache.ibatis.session.SqlSession;
 
-import com.himark.data.Manager;
 
 public class ManagerDAO {
 	
@@ -14,11 +11,11 @@ public class ManagerDAO {
 		return managerDao;
 	}
 	
-	public List<Manager> setApprover(SqlSession session, String userId) {
-		String approval_target = userId;
-		List<Manager> list = session.selectList("setApprover", approval_target);
+	public int insertManager(SqlSession session, String userId) {
+		int insertCount = 0; 
+		insertCount = session.insert("manager.insertManager", userId);
 		
-		return list;
+		return insertCount;
 	}
 
 }
