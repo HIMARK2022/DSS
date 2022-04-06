@@ -12,12 +12,12 @@ public class PosService {
 	
 	private PosDAO posDao = PosDAO.getInstance();
 
-	public int insertTemp(List<Pos> posList) {
-		SqlSession session = MySqlSessionFactory.getSqlSession();
+	public int insertTempId(String table) {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int insertCount = 0; // 반환할 값
 		
 		try {
-			insertCount = posDao.insertTemp(session, posList); // posDao에 SqlSession 전송
+			insertCount = posDao.insertTempId(session, table); // posDao에 SqlSession 전송
 			session.commit();
 			
 		} finally {
@@ -27,12 +27,27 @@ public class PosService {
 		return insertCount;
 	}
 	
-	public int deleteTemp(String companyName) {
-		SqlSession session = MySqlSessionFactory.getSqlSession();
+	public int insertTempName(String table) {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int insertCount = 0; // 반환할 값
+		
+		try {
+			insertCount = posDao.insertTempName(session, table);
+			session.commit();
+			
+		} finally {
+			session.close(); // 세션 닫기
+		}
+		
+		return insertCount;
+	}
+	
+	public int deleteTemp() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int deleteCount = 0;
 		
 		try {
-			deleteCount = posDao.deleteTemp(session, companyName);
+			deleteCount = posDao.deleteTemp(session);
 			session.commit();
 			
 		} finally {
@@ -41,8 +56,9 @@ public class PosService {
 		
 		return deleteCount;
 	}
+	
 	public List<Pos> insertPos() {
-		SqlSession session = MySqlSessionFactory.getSqlSession();
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		List<Pos> list = null; // 반환할 값
 		
 		try {

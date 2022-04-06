@@ -4,26 +4,38 @@
 <mapper namespace="dept">
 
 	<resultMap type="com.himark.data.Dept" id="deptMap">
-		<result property="companyName" column="company_name" />
 		<result property="deptId" column="dept_id" />
 		<result property="deptName" column="dept_name" />
 		<result property="upperDeptId" column="upper_dept_id" />
 	</resultMap>
-
-	<insert id="insertTemp">
-		insert into temp_dept values
-		<foreach collection="list" item="item" separator=",">
-			(#{item.companyName}, #{item.deptId}, #{item.deptName}, #{item.upperDeptId})				
-		</foreach>
+	
+	<!-- temp 테이블에 insert -->
+	<insert id="insertTempId">
+		insert into temp_dept(dept_id) select ${dept.dept_id} from ${schema}.${table}
 	</insert>
 	
+	<update id="insertTempName">
+		update temp_dept
+		inner join ${schema}.${table}
+		on temp_dept.dept_id = ${schema}.${dept.dept_id}
+		set temp_dept.dept_name = ${schema}.${dept.dept_name}
+	</update>
+	
+	<update id="insertTempUpperId">
+		update temp_dept
+		inner join ${schema}.${table}
+		on temp_dept.dept_id = ${schema}.${dept.dept_id}
+		set temp_dept.upper_dept_id = ${schema}.${dept.upper_dept_id}
+	</update>
+	
+	<!-- temp 테이블 비우기 -->
 	<delete id="deleteTemp">
-		delete from temp_dept where company_name = #{companyName}
+		delete from temp_dept
 	</delete>
 	
 	<insert id="insertDept">
 		insert into dept  
-			select company_name, dept_id, dept_name, upper_dept_id from temp_dept 
+			select dept_id, dept_name, upper_dept_id from temp_dept 
 			where dept_id not in (select dept_id from dept)
 	</insert>
 	

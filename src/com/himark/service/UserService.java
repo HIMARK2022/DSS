@@ -12,12 +12,12 @@ public class UserService {
 	
 	private UserDAO userDao = UserDAO.getInstance();
 
-	public int insertTemp(List<User> userList) {
-		SqlSession session = MySqlSessionFactory.getSqlSession();
+	public int insertTempId(String table) {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int insertCount = 0; // 반환할 값
 		
 		try {
-			insertCount = userDao.insertTemp(session, userList); // userDao에 SqlSession 전송
+			insertCount = userDao.insertTempId(session, table); // userDao에 SqlSession 전송
 			session.commit();
 			
 		} finally {
@@ -27,12 +27,87 @@ public class UserService {
 		return insertCount;
 	}
 	
-	public int deleteTemp(String companyName) {
-		SqlSession session = MySqlSessionFactory.getSqlSession();
+	public int insertTempName(String table) {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int insertCount = 0; // 반환할 값
+		
+		try {
+			insertCount = userDao.insertTempName(session, table);
+			session.commit();
+			
+		} finally {
+			session.close(); // 세션 닫기
+		}
+		
+		return insertCount;
+	}
+	
+	public int insertTempPosId(String table) {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int insertCount = 0; // 반환할 값
+		
+		try {
+			insertCount = userDao.insertTempPosId(session, table);
+			session.commit();
+			
+		} finally {
+			session.close(); // 세션 닫기
+		}
+		
+		return insertCount;
+	}
+	
+	public int insertTempDutyId(String table) {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int insertCount = 0; // 반환할 값
+		
+		try {
+			insertCount = userDao.insertTempDutyId(session, table);
+			session.commit();
+			
+		} finally {
+			session.close(); // 세션 닫기
+		}
+		
+		return insertCount;
+	}
+	
+	public int insertTempDeptId(String table) {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int insertCount = 0; // 반환할 값
+		
+		try {
+			insertCount = userDao.insertTempDeptId(session, table);
+			session.commit();
+			
+		} finally {
+			session.close(); // 세션 닫기
+		}
+		
+		return insertCount;
+	}
+	
+	public int insertTempAc(String table) {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int insertCount = 0; // 반환할 값
+		
+		try {
+			insertCount = userDao.insertTempAc(session, table);
+			session.commit();
+			
+		} finally {
+			session.close(); // 세션 닫기
+		}
+		
+		return insertCount;
+	}
+	
+	public int deleteTemp() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int deleteCount = 0;
 		
 		try {
-			deleteCount = userDao.deleteTemp(session, companyName);
+			deleteCount = userDao.deleteTemp(session);
 			session.commit();
 			
 		} finally {
@@ -41,8 +116,9 @@ public class UserService {
 		
 		return deleteCount;
 	}
-	public  List<User> insertUser() {
-		SqlSession session = MySqlSessionFactory.getSqlSession();
+	
+	public List<User> insertUser() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		List<User> list = null; // 반환할 값
 		
 		try {
@@ -56,7 +132,7 @@ public class UserService {
 	}
 	
 	public List<User> selectUser() {
-		SqlSession session = MySqlSessionFactory.getSqlSession();
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		List<User> list = null; // 반환할 값
 		
 		try {

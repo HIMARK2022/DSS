@@ -1,7 +1,6 @@
 package com.himark.data;
 
 public class User {
-	private String companyName; // company_name
 	private String userId; // user_id
 	private String userName; // user_name
 	private String posId; // pos_id
@@ -21,26 +20,6 @@ public class User {
 		this.authorityCode = authorityCode;
 	}
 	
-	public User(String companyName, String userId, String userName, String posId, String dutyId, String deptId,
-			String authorityCode) {
-		super();
-		this.companyName = companyName;
-		this.userId = userId;
-		this.userName = userName;
-		this.posId = posId;
-		this.dutyId = dutyId;
-		this.deptId = deptId;
-		this.authorityCode = authorityCode;
-	}
-	
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-
 	public String getUserId() {
 		return userId;
 	}
@@ -91,8 +70,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [companyName=" + companyName + ", userId=" + userId + ", userName=" + userName + ", posId=" + posId
-				+ ", dutyId=" + dutyId + ", deptId=" + deptId + ", authorityCode=" + authorityCode + "]";
+		return "User [userId=" + userId + ", userName=" + userName + ", posId=" + posId + ", dutyId=" + dutyId
+				+ ", deptId=" + deptId + ", authorityCode=" + authorityCode + "]";
 	}
 	
 }

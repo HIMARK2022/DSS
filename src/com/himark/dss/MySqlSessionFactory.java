@@ -10,7 +10,8 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 public class MySqlSessionFactory {
 	
-	static SqlSessionFactory sqlSessionFactory = null;
+	static SqlSessionFactory ma_ssf = null;
+	static SqlSessionFactory c_ssf = null;
 	
 	static {
 		String resource = "com/himark/dss/Configuration.xml";
@@ -23,12 +24,37 @@ public class MySqlSessionFactory {
 			e.printStackTrace();
 		}
 
-		sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+		ma_ssf = new SqlSessionFactoryBuilder().build(inputStream);
+	}
+	
+	static {
+		String resource = "com/himark/dss/Configuration.xml";
+		InputStream inputStream = null;
+
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		c_ssf = new SqlSessionFactoryBuilder().build(inputStream, "client");
+	}
+	
+	// SqlSessionFactory 반환
+	public static SqlSessionFactory getClientSqlSessionFactory() {
+		return c_ssf;
 	}
 	
 	// SqlSession 반환
-	public static SqlSession getSqlSession() {
-		SqlSession session = sqlSessionFactory.openSession();
+	public static SqlSession getMarkanySqlSession() {
+		SqlSession session = ma_ssf.openSession();
+		
+		return session;
+	}
+	
+	public static SqlSession getClientSqlSession() {
+		SqlSession session = c_ssf.openSession();
 		
 		return session;
 	}

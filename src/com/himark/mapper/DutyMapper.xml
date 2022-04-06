@@ -4,25 +4,30 @@
 <mapper namespace="duty">
 
 	<resultMap type="com.himark.data.Duty" id="dutyMap">
-		<result property="companyName" column="company_name"/>
 		<result property="dutyId" column="duty_id"/>
 		<result property="dutyName" column="duty_name"/>
 	</resultMap>
-
-	<insert id="insertTemp">
-		insert into temp_duty values
-		<foreach collection="list" item="item" separator=",">
-			(#{item.companyName}, #{item.dutyId}, #{item.dutyName})	
-		</foreach>
+	
+	<!-- temp 테이블에 insert -->
+	<insert id="insertTempId">
+		insert into temp_duty(duty_id) select ${duty.duty_id} from ${schema}.${table}
 	</insert>
 	
+	<update id="insertTempName">
+		update temp_duty
+		inner join ${schema}.${table}
+		on temp_duty.duty_id = ${schema}.${duty.duty_id}
+		set temp_duty.duty_name = ${schema}.${duty.duty_name}
+	</update>
+	
+	<!-- temp 테이블 비우기 -->
 	<delete id="deleteTemp">
-		delete from temp_duty where company_name = #{companyName}
+		delete from temp_duty
 	</delete>
 	
 	<insert id="insertDuty">
 		insert into duty 
-			select company_name, duty_id, duty_name from temp_duty 
+			select duty_id, duty_name from temp_duty 
 			where duty_id not in (select duty_id from duty)
 	</insert>
 	

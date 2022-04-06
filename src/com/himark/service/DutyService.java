@@ -12,12 +12,12 @@ public class DutyService {
 	
 	private DutyDAO dutyDao = DutyDAO.getInstance();
 
-	public int insertTemp(List<Duty> dutyList) {
-		SqlSession session = MySqlSessionFactory.getSqlSession();
+	public int insertTempId(String table) {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int insertCount = 0; // 반환할 값
 		
 		try {
-			insertCount = dutyDao.insertTemp(session, dutyList); // dutyDao에 SqlSession 전송
+			insertCount = dutyDao.insertTempId(session, table); // dutyDao에 SqlSession 전송
 			session.commit();
 			
 		} finally {
@@ -27,12 +27,27 @@ public class DutyService {
 		return insertCount;
 	}
 	
-	public int deleteTemp(String companyName) {
-		SqlSession session = MySqlSessionFactory.getSqlSession();
+	public int insertTempName(String table) {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int insertCount = 0; // 반환할 값
+		
+		try {
+			insertCount = dutyDao.insertTempName(session, table);
+			session.commit();
+			
+		} finally {
+			session.close(); // 세션 닫기
+		}
+		
+		return insertCount;
+	}
+	
+	public int deleteTemp() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int deleteCount = 0;
 		
 		try {
-			deleteCount = dutyDao.deleteTemp(session, companyName);
+			deleteCount = dutyDao.deleteTemp(session);
 			session.commit();
 			
 		} finally {
@@ -43,7 +58,7 @@ public class DutyService {
 	}
 	
 	public List<Duty> insertDuty() {
-		SqlSession session = MySqlSessionFactory.getSqlSession();
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		List<Duty> list = null; // 반환할 값
 		
 		try {

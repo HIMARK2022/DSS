@@ -1,188 +1,131 @@
 package com.himark.dss;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Properties;
 
-import com.himark.data.Dept;
-import com.himark.data.Duty;
-import com.himark.data.Pos;
-import com.himark.data.User;
+import org.apache.ibatis.session.SqlSessionFactory;
+
 import com.himark.service.DeptService;
 import com.himark.service.DutyService;
-import com.himark.service.ManagerService;
 import com.himark.service.PosService;
 import com.himark.service.UserService;
 
 public class DataProcess {
 	
-	// 고객사 데이터 리스트에 저장
-	public static List<User> saveClientUser(Connection conn, List<String> user) {
+	// 프로퍼티 파일 읽기
+	public static String getProperty(String property) {
 		
-		List<User> userList = new LinkedList<User>();
+		SqlSessionFactory c_ssf = MySqlSessionFactory.getClientSqlSessionFactory();
+		Properties properties = c_ssf.getConfiguration().getVariables();
 		
-		String sql = "select " + user.get(6) 
-					+ "," + user.get(7) 
-					+ "," + user.get(8) 
-					+ "," + user.get(9) 
-					+ "," + user.get(10)
-					+ "," + user.get(11)
-					+ " from " + user.get(5);
+		String table = properties.getProperty(property).split("\\.")[0];
 		
-		System.out.println(sql);
-		
-		try {
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				userList.add(new User(user.get(0), rs.getString(1), rs.getString(2), rs.getString(3),
-						              rs.getString(4), rs.getString(5), rs.getString(6)));
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return userList;
+		return table;
 	}
 	
-	public static List<Pos> saveClientPos(Connection conn, List<String> pos) {
-		
-		List<Pos> posList = new LinkedList<Pos>();
-		
-		String sql = "select " + pos.get(13) 
-					+ "," + pos.get(14) 
-					+ " from " + pos.get(12);
-		
-		System.out.println(sql);
-		
-		try {
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				posList.add(new Pos(pos.get(0), rs.getString(1), rs.getString(2)));
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return posList;
-	}
-	
-	public static List<Duty> saveClientDuty(Connection conn, List<String> duty) {
-		
-		List<Duty> dutyList = new LinkedList<Duty>();
-		
-		String sql = "select " + duty.get(16) 
-					+ "," + duty.get(17)
-					+ " from " + duty.get(15);
-		
-		System.out.println(sql);
-		
-		try {
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				dutyList.add(new Duty(duty.get(0), rs.getString(1), rs.getString(2)));
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return dutyList;
-	}
-	
-	public static List<Dept> saveClientDept(Connection conn, List<String> dept) {
-		
-		List<Dept> deptList = new LinkedList<Dept>();
-		
-		String sql = "select " + dept.get(19) 
-					+ "," + dept.get(20) 
-					+ "," + dept.get(21)
-					+ " from " + dept.get(18);
-		
-		System.out.println(sql);
-		
-		try {
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				deptList.add(new Dept(dept.get(0), rs.getString(1), rs.getString(2), rs.getString(3)));
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return deptList;
-	}
 	
 	// 고객사 데이터를 마크애니 DB의 temp 테이블에 저장
-	public static int saveTempUser(List<User> userList) {
+	public static void saveTempUser(String[] table) {
 		UserService userService = new UserService();
 		
-		int deleteCount = userService.deleteTemp(userList.get(0).getCompanyName());
+		int deleteCount = userService.deleteTemp();
 		System.out.println(deleteCount + "건이 temp_user에서 삭제되었습니다.");
 		
-		int insertCount = userService.insertTemp(userList);
+		int insertCount = 0;
 		
-		return insertCount;
+		if(!table[0].equals("")) {
+			insertCount = userService.insertTempId(table[0]);
+			System.out.println(insertCount + "건이 temp_user의 user_id 컬럼에 추가되었습니다.");
+		}
+		
+		if(!table[1].equals("")) {
+			insertCount = userService.insertTempName(table[1]);
+			System.out.println(insertCount + "건이 temp_user의 user_name 컬럼에 추가되었습니다.");
+		}
+		
+		if(!table[2].equals("")) {
+			insertCount = userService.insertTempPosId(table[2]);
+			System.out.println(insertCount + "건이 temp_user의 pos_id 컬럼에 추가되었습니다.");
+		}
+		
+		if(!table[3].equals("")) {
+			insertCount = userService.insertTempDutyId(table[3]);
+			System.out.println(insertCount + "건이 temp_user의 duty_id 컬럼에 추가되었습니다.");
+		}
+		
+		if(!table[4].equals("")) {
+			insertCount = userService.insertTempDeptId(table[4]);
+			System.out.println(insertCount + "건이 temp_user의 dept_id 컬럼에 추가되었습니다.");
+		}
+		
+		if(!table[5].equals("")) {
+			insertCount = userService.insertTempAc(table[5]);
+			System.out.println(insertCount + "건이 temp_user의 authority_code 컬럼에 추가되었습니다.");
+		}
+
 	}
 	
-	public static int saveTempPos(List<Pos> posList) {
+	public static void saveTempPos(String[] table) {
 		PosService posService = new PosService();
 		
-		int deleteCount = posService.deleteTemp(posList.get(0).getCompanyName());
+		int deleteCount = posService.deleteTemp();
 		System.out.println(deleteCount + "건이 temp_pos에서 삭제되었습니다.");
 		
-		int insertCount = posService.insertTemp(posList);
+		int insertCount = 0;
 		
-		return insertCount;
+		if(!table[0].equals("")) {
+			insertCount = posService.insertTempId(table[0]);	
+			System.out.println(insertCount + "건이 temp_pos의 pos_id 컬럼에 추가되었습니다.");
+		}
+		
+		if(!table[1].equals("")) {
+			insertCount = posService.insertTempName(table[1]);
+			System.out.println(insertCount + "건이 temp_pos의 pos_name 컬럼에 추가되었습니다.");
+		}
 	}
 	
-	public static int saveTempDuty(List<Duty> dutyList) {
+	public static void saveTempDuty(String[] table) {
 		DutyService dutyService = new DutyService();
 		
-		int deleteCount = dutyService.deleteTemp(dutyList.get(0).getCompanyName());
+		int deleteCount = dutyService.deleteTemp();
 		System.out.println(deleteCount + "건이 temp_duty에서 삭제되었습니다.");
 		
-		int insertCount = dutyService.insertTemp(dutyList);
+		int insertCount = 0;
 		
-		return insertCount;
-	}
-
-	public static int saveTempDept(List<Dept> deptList) {
-		DeptService deptService = new DeptService();
+		if(!table[0].equals("")) {
+			insertCount = dutyService.insertTempId(table[0]);
+			System.out.println(insertCount + "건이 temp_duty의 duty_id 컬럼에 추가되었습니다.");
+		}
 		
-		int deleteCount = deptService.deleteTemp(deptList.get(0).getCompanyName());
-		System.out.println(deleteCount + "건이 temp_dept에서 삭제되었습니다.");
-		
-		int insertCount = deptService.insertTemp(deptList);
-		
-		return insertCount;
+		if(!table[1].equals("")) {
+			insertCount = dutyService.insertTempName(table[1]);
+			System.out.println(insertCount + "건이 temp_duty의 duty_name 컬럼에 추가되었습니다.");
+		}
 	}
 	
+	public static void saveTempDept(String[] table) {
+		DeptService deptService = new DeptService();
+		
+		int deleteCount = deptService.deleteTemp();
+		System.out.println(deleteCount + "건이 temp_dept에서 삭제되었습니다.");
+		
+		int insertCount = 0;
+		
+		if(!table[0].equals("")) {
+			insertCount = deptService.insertTempId(table[0]);
+			System.out.println(insertCount + "건이 temp_dept의 dept_id 컬럼에 추가되었습니다.");
+		}
+		
+		if(!table[1].equals("")) {
+			insertCount = deptService.insertTempName(table[1]);
+			System.out.println(insertCount + "건이 temp_dept의 dept_name 컬럼에 추가되었습니다.");
+		}
+		
+		if(!table[2].equals("")) {
+			insertCount = deptService.insertTempUpperId(table[2]);
+			System.out.println(insertCount + "건이 temp_dept의 upper_dept_id 컬럼에 추가되었습니다.");
+		}
+	}
+	/*
 	public static void copyDept() {
 		DeptService service = new DeptService();
 		service.insertDept();
@@ -212,5 +155,6 @@ public class DataProcess {
 			service_manager.setApprover(user.getUserId());
 		}
 	}
+	*/
 	
 }

@@ -1,7 +1,6 @@
 package com.himark.data;
 
 public class Duty {
-	private String companyName; // company_name
 	private String dutyId; // duty_id
 	private String dutyName; // duty_name
 	
@@ -13,21 +12,6 @@ public class Duty {
 		this.dutyName = dutyName;
 	}
 	
-	public Duty(String companyName, String dutyId, String dutyName) {
-		super();
-		this.companyName = companyName;
-		this.dutyId = dutyId;
-		this.dutyName = dutyName;
-	}
-	
-	public String getCompanyName() {
-		return companyName;
-	}
-	
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-
 	public String getDutyId() {
 		return dutyId;
 	}
@@ -46,7 +30,7 @@ public class Duty {
 
 	@Override
 	public String toString() {
-		return "Duty [companyName=" + companyName + ", dutyId=" + dutyId + ", dutyName=" + dutyName + "]";
+		return "Duty [dutyId=" + dutyId + ", dutyName=" + dutyName + "]";
 	}
-
+	
 }

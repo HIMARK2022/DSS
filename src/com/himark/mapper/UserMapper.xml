@@ -4,7 +4,6 @@
 <mapper namespace="user">
 
 	<resultMap type="com.himark.data.User" id="userMap">
-		<result property="companyName" column="company_name" />
 		<result property="userId" column="user_id"/>
 		<result property="userName" column="user_name"/>
 		<result property="posId" column="pos_id"/>
@@ -13,16 +12,49 @@
 		<result property="authorityCode" column="authority_code"/>
 	</resultMap>
 	
-	<insert id="insertTemp">
-		insert into temp_user values
-		<foreach collection="list" item="item" separator=",">
-			(#{item.companyName}, #{item.userId}, #{item.userName}, #{item.posId},
-			 #{item.dutyId}, #{item.deptId}, #{item.authorityCode})			
-		</foreach>
+	<!-- temp 테이블에 insert -->
+	<insert id="insertTempId">
+		insert into temp_user(user_id) select ${user.user_id} from ${schema}.${table}
 	</insert>
 	
+	<update id="insertTempName">
+		update temp_user
+		inner join ${schema}.${table}
+		on temp_user.user_id = ${schema}.${user.user_id}
+		set temp_user.user_name = ${schema}.${user.user_name}
+	</update>
+	
+	<update id="insertTempPosId">
+		update temp_user
+		inner join ${schema}.${table}
+		on temp_user.user_id = ${schema}.${user.user_id}
+		set temp_user.pos_id = ${schema}.${user.pos_id}
+	</update>
+	
+	<update id="insertTempDutyId">
+		update temp_user
+		inner join ${schema}.${table}
+		on temp_user.user_id = ${schema}.${user.user_id}
+		set temp_user.duty_id = ${schema}.${user.duty_id}
+	</update>
+	
+	<update id="insertTempDeptId">
+		update temp_user
+		inner join ${schema}.${table}
+		on temp_user.user_id = ${schema}.${user.user_id}
+		set temp_user.dept_id = ${schema}.${user.dept_id}
+	</update>
+	
+	<update id="insertTempAc">
+		update temp_user
+		inner join ${schema}.${table}
+		on temp_user.user_id = ${schema}.${user.user_id}
+		set temp_user.authority_code = ${schema}.${user.authority_code}
+	</update>
+	
+	<!-- temp 테이블 비우기 -->
 	<delete id="deleteTemp">
-		delete from temp_user where company_name = #{companyName}
+		delete from temp_user
 	</delete>
 	
 	<select id="selectUser" resultMap="userMap">
@@ -32,8 +64,8 @@
 	</select>
 	
 	<insert id="insertUser">
-		insert into user (company_name, user_id, user_password, user_name, pos_id, duty_id, dept_id, authority_code, current_state)
-			select company_name, user_id, user_id, user_name, pos_id, duty_id, dept_id, authority_code, '재직' 
+		insert into user (user_id, user_password, user_name, pos_id, duty_id, dept_id, authority_code, current_state)
+			select user_id, user_id, user_name, pos_id, duty_id, dept_id, authority_code, '재직' 
 			from temp_user 
 			where user_id not in (select user_id from user)
 	</insert>
