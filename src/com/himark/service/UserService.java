@@ -1,11 +1,8 @@
 package com.himark.service;
 
-import java.util.List;
-
 import org.apache.ibatis.session.SqlSession;
 
 import com.himark.dao.UserDAO;
-import com.himark.data.User;
 import com.himark.dss.MySqlSessionFactory;
 
 public class UserService {
@@ -117,20 +114,22 @@ public class UserService {
 		return deleteCount;
 	}
 	
-	public List<User> insertUser() {
+	public int insertUser() {
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
-		List<User> list = null; // 반환할 값
+		int insertCount = 0;
 		
 		try {
-			list = userDao.insertUser(session); // dao에 SqlSession 전송
+			insertCount = userDao.insertUser(session); // dao에 SqlSession 전송
+			session.commit();
+			
 		} finally {
 			session.close(); // 세션 닫기
 		}
 		
-		return list;
+		return insertCount;
 		
 	}
-	
+	/*
 	public List<User> selectUser() {
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		List<User> list = null; // 반환할 값
@@ -143,5 +142,6 @@ public class UserService {
 		
 		return list;
 	}
+	*/
 	
 }

@@ -125,27 +125,36 @@ public class DataProcess {
 			System.out.println(insertCount + "건이 temp_dept의 upper_dept_id 컬럼에 추가되었습니다.");
 		}
 	}
+	
+	public static int insertUser() {
+		UserService userService = new UserService();
+		int insertCount = userService.insertUser();
+		
+		return insertCount;
+	}
+	
+	public static int insertPos() {
+		PosService posService = new PosService();
+		int insertCount = posService.insertPos();
+		
+		return insertCount;
+	}
+	
+	public static int insertDuty() {
+		DutyService dutyService = new DutyService();
+		int insertCount = dutyService.insertDuty();
+		
+		return insertCount;
+	}
+	
+	public static int insertDept() {
+		DeptService deptService = new DeptService();
+		int insertCount = deptService.insertDept();
+		
+		return insertCount;
+	}
+	
 	/*
-	public static void copyDept() {
-		DeptService service = new DeptService();
-		service.insertDept();
-	}
-	
-	public static void copyDuty() {
-		DutyService service = new DutyService();
-		service.insertDuty();
-	}
-	
-	public static void copyPos() {
-		PosService service = new PosService();
-		service.insertPos();
-	}
-	
-	public static void copyUser() {
-		UserService service = new UserService();
-		service.insertUser();
-	}
-	
 	public static void setApprover() {
 		UserService service = new UserService();
 		ManagerService service_manager = new ManagerService();

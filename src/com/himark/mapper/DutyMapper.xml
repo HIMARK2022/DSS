@@ -27,8 +27,8 @@
 	
 	<insert id="insertDuty">
 		insert into duty 
-			select duty_id, duty_name from temp_duty 
-			where duty_id not in (select duty_id from duty)
+		select duty_id, duty_name from temp_duty 
+		where duty_id not in (select duty_id from duty)
 	</insert>
 	
 </mapper>

@@ -1,10 +1,6 @@
 package com.himark.dao;
 
-import java.util.List;
-
 import org.apache.ibatis.session.SqlSession;
-
-import com.himark.data.Pos;
 
 public class PosDAO {
 	
@@ -37,10 +33,11 @@ public class PosDAO {
 		return deleteCount;
 	}
 
-	public List<Pos> insertPos(SqlSession session) {
-		List<Pos> list = session.selectList("insertPos"); 
+	public int insertPos(SqlSession session) {
+		int insertCount = 0;
+		insertCount = session.insert("pos.insertPos"); 
 		
-		return list;
+		return insertCount;
 	}
 	
 }

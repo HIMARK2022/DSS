@@ -32,16 +32,18 @@ public class DataSynchronization {
 		DataProcess.saveTempDuty(duty);
 		DataProcess.saveTempDept(dept);
 		
-		//System.out.println("temp_user에 insert한 개수: " + userInsertCount + "개");
-		//System.out.println("temp_pos에 insert한 개수: " + posInsertCount + "개");
-		//System.out.println("temp_duty에 insert한 개수: " + dutyInsertCount + "개");
-		//System.out.println("temp_dept에 insert한 개수: " + deptInsertCount + "개");
-		
-		//DataProcess.copyDept();
-		//DataProcess.copyDuty();
-		//DataProcess.copyPos();
+		// 새로운 데이터만 insert
+		int userInsertCount = DataProcess.insertUser();
+		int posInsertCount = DataProcess.insertPos();
+		int dutyInsertCount = DataProcess.insertDuty();
+		int deptInsertCount = DataProcess.insertDept();
 		//DataProcess.setApprover();
-		//DataProcess.copyUser();
+		
+		System.out.println("================================");
+		System.out.println("user에 insert한 개수: " + userInsertCount + "개");
+		System.out.println("pos에 insert한 개수: " + posInsertCount + "개");
+		System.out.println("duty에 insert한 개수: " + dutyInsertCount + "개");
+		System.out.println("dept에 insert한 개수: " + deptInsertCount + "개");
 		
 	}
 

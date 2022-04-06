@@ -65,9 +65,9 @@
 	
 	<insert id="insertUser">
 		insert into user (user_id, user_password, user_name, pos_id, duty_id, dept_id, authority_code, current_state)
-			select user_id, user_id, user_name, pos_id, duty_id, dept_id, authority_code, '재직' 
-			from temp_user 
-			where user_id not in (select user_id from user)
+		select user_id, user_id, user_name, pos_id, duty_id, dept_id, authority_code, '재직'
+		from temp_user 
+		where user_id not in (select user_id from user)
 	</insert>
 	
 </mapper>

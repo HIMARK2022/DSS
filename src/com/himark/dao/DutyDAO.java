@@ -1,10 +1,6 @@
 package com.himark.dao;
 
-import java.util.List;
-
 import org.apache.ibatis.session.SqlSession;
-
-import com.himark.data.Duty;
 
 public class DutyDAO {
 	
@@ -37,10 +33,11 @@ public class DutyDAO {
 		return deleteCount;
 	}
 
-	public List<Duty> insertDuty(SqlSession session) { 
-		List<Duty> list = session.selectList("insertDuty"); 
+	public int insertDuty(SqlSession session) {
+		int insertCount = 0;
+		insertCount = session.insert("duty.insertDuty"); 
 		
-		return list;
+		return insertCount;
 	}
 	
 }

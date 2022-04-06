@@ -1,11 +1,8 @@
 package com.himark.service;
 
-import java.util.List;
-
 import org.apache.ibatis.session.SqlSession;
 
 import com.himark.dao.DeptDAO;
-import com.himark.data.Dept;
 import com.himark.dss.MySqlSessionFactory;
 
 public class DeptService {
@@ -72,17 +69,19 @@ public class DeptService {
 		return deleteCount;
 	}
 	
-	public List<Dept> insertDept() {
+	public int insertDept() {
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
-		List<Dept> list = null; // 반환할 값
+		int insertCount = 0; // 반환할 값
 		
 		try {
-			list = deptDao.insertDept(session); // dao에 SqlSession 전송
+			insertCount = deptDao.insertDept(session); // dao에 SqlSession 전송
+			session.commit();
+			
 		} finally {
 			session.close(); // 세션 닫기
 		}
 		
-		return list;
+		return insertCount;
 	}
 	
 }

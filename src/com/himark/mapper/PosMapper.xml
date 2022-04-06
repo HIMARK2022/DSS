@@ -27,8 +27,8 @@
 	
 	<insert id="insertPos">
 		insert into pos  
-			select pos_id, pos_name from temp_pos 
-			where pos_id not in (select pos_id from pos)
+		select pos_id, pos_name from temp_pos
+		where pos_id not in (select pos_id from pos)
 	</insert>
 	
 </mapper>

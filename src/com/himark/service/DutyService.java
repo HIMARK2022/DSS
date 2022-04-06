@@ -1,11 +1,8 @@
 package com.himark.service;
 
-import java.util.List;
-
 import org.apache.ibatis.session.SqlSession;
 
 import com.himark.dao.DutyDAO;
-import com.himark.data.Duty;
 import com.himark.dss.MySqlSessionFactory;
 
 public class DutyService {
@@ -57,17 +54,19 @@ public class DutyService {
 		return deleteCount;
 	}
 	
-	public List<Duty> insertDuty() {
+	public int insertDuty() {
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
-		List<Duty> list = null; // 반환할 값
+		int insertCount = 0; // 반환할 값
 		
 		try {
-			list = dutyDao.insertDuty(session); // dao에 SqlSession 전송
+			insertCount = dutyDao.insertDuty(session); // dao에 SqlSession 전송
+			session.commit();
+			
 		} finally {
 			session.close(); // 세션 닫기
 		}
 		
-		return list;
+		return insertCount;
 	}
 	
 }
