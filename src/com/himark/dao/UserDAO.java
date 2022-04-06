@@ -1,6 +1,10 @@
 package com.himark.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
+
+import com.himark.data.User;
 
 public class UserDAO {
 	
@@ -68,11 +72,17 @@ public class UserDAO {
 		return insertCount;
 	}
 
-	public int selectUser(SqlSession session) {
-		int insertCount = 0;
-		insertCount = session.insert("selectUser");
+	public List<User> selectUser(SqlSession session) {
+		List<User> list = session.selectList("user.selectUser");
 		
-		return insertCount;
+		return list;
+	}
+
+	public int deleteUser(SqlSession session) {
+		int deleteCount = 0; 
+		deleteCount = session.delete("user.deleteUser");
+		
+		return deleteCount;
 	}
 	
 }

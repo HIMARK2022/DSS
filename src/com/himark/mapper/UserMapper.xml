@@ -70,4 +70,11 @@
 		where user_id not in (select user_id from user)
 	</insert>
 	
+	<update id="deleteUser">
+		update user set current_state = '퇴직'
+		where flag = '인사연동'
+		and user_id not in (select user_id from temp_user)
+		or user_id = any(select user_id from temp_user where current_state = '퇴직');
+	</update>
+	
 </mapper>

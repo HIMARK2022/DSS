@@ -1,11 +1,14 @@
 package com.himark.dss;
 
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import com.himark.data.User;
 import com.himark.service.DeptService;
 import com.himark.service.DutyService;
+import com.himark.service.ManagerService;
 import com.himark.service.PosService;
 import com.himark.service.UserService;
 
@@ -154,16 +157,24 @@ public class DataProcess {
 		return insertCount;
 	}
 	
-	/*
-	public static void setApprover() {
+	public static int setApprover() {
 		UserService service = new UserService();
 		ManagerService service_manager = new ManagerService();
 		List<User> list = service.selectUser();
+		int insertCount = 0;
 		
 		for(User user : list) {
-			service_manager.setApprover(user.getUserId());
+			insertCount = service_manager.setApprover(user.getUserId());
 		}
+		
+		return insertCount;
 	}
-	*/
+	
+	public static int deleteUser() {
+		UserService service = new UserService();
+		int deleteCount =service.deleteUser();
+		
+		return deleteCount;
+	}
 	
 }

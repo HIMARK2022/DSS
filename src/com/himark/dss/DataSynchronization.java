@@ -31,20 +31,27 @@ public class DataSynchronization {
 		DataProcess.saveTempPos(pos);
 		DataProcess.saveTempDuty(duty);
 		DataProcess.saveTempDept(dept);
+		DataProcess.setApprover();
 		
 		// 새로운 데이터만 insert
 		int userInsertCount = DataProcess.insertUser();
 		int posInsertCount = DataProcess.insertPos();
 		int dutyInsertCount = DataProcess.insertDuty();
 		int deptInsertCount = DataProcess.insertDept();
-		//DataProcess.setApprover();
+//		int managerInsertCount = DataProcess.setApprover();
+		
+		//데이터가 없거나 '퇴직'상태일시 퇴직처리
+		int deleteCount = DataProcess.deleteUser();
+		
 		
 		System.out.println("================================");
 		System.out.println("user에 insert한 개수: " + userInsertCount + "개");
 		System.out.println("pos에 insert한 개수: " + posInsertCount + "개");
 		System.out.println("duty에 insert한 개수: " + dutyInsertCount + "개");
 		System.out.println("dept에 insert한 개수: " + deptInsertCount + "개");
-		
+//		System.out.println("manager에 insert한 개수: " + managerInsertCount + "개");
+		System.out.println("user에 delete한 개수: " + deleteCount + "개");
+		System.out.println("================================");
 	}
 
 }
