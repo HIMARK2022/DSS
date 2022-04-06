@@ -44,4 +44,16 @@
 		where dept_id not in (select dept_id from temp_dept)
 	</delete>
 	
+	<update id="updateDept">
+		update dept
+		inner join temp_dept
+		on dept.dept_id = temp_dept.dept_id
+		<set>
+			dept.dept_name = temp_dept.dept_name,
+			dept.upper_dept_id = temp_dept.upper_dept_id
+		</set>
+		where dept.dept_name != temp_dept.dept_name
+			  or dept.upper_dept_id != temp_dept.upper_dept_id;
+	</update>
+	
 </mapper>

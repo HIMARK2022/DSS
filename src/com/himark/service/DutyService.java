@@ -84,4 +84,19 @@ public class DutyService {
 		return deleteCount;
 	}
 	
+	public int updateDuty() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int updateCount = 0;
+		
+		try {
+			updateCount = dutyDao.updateDuty(session);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return updateCount;
+	}
+	
 }

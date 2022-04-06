@@ -162,4 +162,19 @@ public class UserService {
 		return deleteCount;
 	}
 	
+	public int updateUser() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int updateCount = 0;
+		
+		try {
+			updateCount = userDao.updateUser(session);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return updateCount;
+	}
+	
 }

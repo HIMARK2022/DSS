@@ -58,7 +58,11 @@ public class DataSynchronization {
 		System.out.println("dept에서 delete한 개수: " + deptDeleteCount + "개");
 		System.out.println("manager에서 delete한 개수: " + managerDeleteCount + "개");
 		System.out.println("user에서 delete했었던 개수: " + userDeleteCount + "개");
-		
+		System.out.println("================================");
+		System.out.println("user에 update한 개수: " + DataProcess.updateUser() + "개");
+		System.out.println("pos에 update한 개수: " + DataProcess.updatePos() + "개");
+		System.out.println("duty에 update한 개수: " + DataProcess.updateDuty() + "개");
+		System.out.println("dept에 update한 개수: " + DataProcess.updateDept() + "개");
 	}
 
 }

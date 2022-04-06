@@ -99,4 +99,19 @@ public class DeptService {
 		return deleteCount;
 	}
 	
+	public int updateDept() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int updateCount = 0;
+		
+		try {
+			updateCount = deptDao.updateDept(session);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return updateCount;
+	}
+	
 }

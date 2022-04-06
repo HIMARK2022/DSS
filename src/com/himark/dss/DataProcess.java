@@ -184,14 +184,12 @@ public class DataProcess {
 		return deleteCount;
 	}
 
-
 	public static int deleteDept() {
 		DeptService service = new DeptService();
 		int deleteCount =service.deleteDept();
 		
 		return deleteCount;
 	}
-
 
 	public static int deleteManager() {
 		ManagerService service = new ManagerService();
@@ -205,6 +203,34 @@ public class DataProcess {
 		int deleteCount =service.deleteUser();
 		
 		return deleteCount;
+	}
+	
+	public static int updateUser() {
+		UserService userService = new UserService();
+		int updateCount = userService.updateUser();
+		
+		return updateCount;
+	}
+	
+	public static int updatePos() {
+		PosService posService = new PosService();
+		int updateCount = posService.updatePos();
+		
+		return updateCount;
+	}
+	
+	public static int updateDuty() {
+		DutyService dutyService = new DutyService();
+		int updateCount = dutyService.updateDuty();
+		
+		return updateCount;
+	}
+	
+	public static int updateDept() {
+		DeptService deptService = new DeptService();
+		int updateCount = deptService.updateDept();
+		
+		return updateCount;
 	}
 	
 }

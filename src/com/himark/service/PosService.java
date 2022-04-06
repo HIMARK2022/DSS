@@ -84,4 +84,19 @@ public class PosService {
 		return deleteCount;
 	}
 	
+	public int updatePos() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int updateCount = 0;
+		
+		try {
+			updateCount = posDao.updatePos(session);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return updateCount;
+	}
+	
 }

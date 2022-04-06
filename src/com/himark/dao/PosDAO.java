@@ -47,4 +47,11 @@ public class PosDAO {
 		return deleteCount;
 	}
 	
+	public int updatePos(SqlSession session) {
+		int updateCount = 0;
+		updateCount = session.update("pos.updatePos");
+		
+		return updateCount;
+	}
+	
 }

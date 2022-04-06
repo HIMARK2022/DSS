@@ -36,4 +36,12 @@
 		where duty_id not in (select duty_id from temp_duty)
 	</delete>
 	
+	<update id="updateDuty">
+		update duty
+		inner join temp_duty
+		on duty.duty_id = temp_duty.duty_id
+		set duty.duty_name = temp_duty.duty_name
+		where duty.duty_name != temp_duty.duty_name;
+	</update>
+	
 </mapper>

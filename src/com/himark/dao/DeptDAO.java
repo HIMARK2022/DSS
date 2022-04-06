@@ -54,4 +54,11 @@ public class DeptDAO {
 		return deleteCount;
 	}
 	
+	public int updateDept(SqlSession session) {
+		int updateCount = 0;
+		updateCount = session.update("dept.updateDept");
+		
+		return updateCount;
+	}
+	
 }

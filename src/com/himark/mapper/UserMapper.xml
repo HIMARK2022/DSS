@@ -76,5 +76,25 @@
 		and user_id not in (select user_id from temp_user)
 		or user_id = any(select user_id from temp_user where current_state = '퇴직');
 	</update>
+
+	<update id="updateUser">
+		update user
+		inner join temp_user
+		on user.user_id = temp_user.user_id
+		<set>
+			user.user_name = temp_user.user_name,
+			user.pos_id = temp_user.pos_id,
+			user.duty_id = temp_user.duty_id,
+			user.dept_id = temp_user.dept_id,
+			user.authority_code = temp_user.authority_code
+		</set>
+		where user.user_name != temp_user.user_name
+			  or user.pos_id != temp_user.pos_id
+			  or user.duty_id != temp_user.duty_id
+			  or user.dept_id != temp_user.dept_id
+			  or user.authority_code != temp_user.authority_code
+			  and user.current_state = '재직' 
+			  and user.flag = '인사연동';
+	</update>
 	
 </mapper>

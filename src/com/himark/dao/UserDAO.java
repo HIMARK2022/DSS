@@ -85,4 +85,11 @@ public class UserDAO {
 		return deleteCount;
 	}
 	
+	public int updateUser(SqlSession session) {
+		int updateCount = 0;
+		updateCount = session.update("user.updateUser");
+		
+		return updateCount;
+	}
+	
 }
