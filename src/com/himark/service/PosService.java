@@ -68,5 +68,20 @@ public class PosService {
 		
 		return insertCount;
 	}
+
+	public int deletePos() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int deleteCount = 0;
+		
+		try {
+			deleteCount = posDao.deleteUser(session);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return deleteCount;
+	}
 	
 }

@@ -39,5 +39,12 @@ public class DutyDAO {
 		
 		return insertCount;
 	}
+
+	public int deleteDuty(SqlSession session) {
+		int deleteCount = 0; 
+		deleteCount = session.delete("duty.deleteDuty");
+		
+		return deleteCount;
+	}
 	
 }

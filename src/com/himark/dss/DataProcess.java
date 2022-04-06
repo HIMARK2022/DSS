@@ -170,6 +170,36 @@ public class DataProcess {
 		return insertCount;
 	}
 	
+	public static int deletePos() {
+		PosService service = new PosService();
+		int deleteCount =service.deletePos();
+		
+		return deleteCount;
+	}
+	
+	public static int deleteDuty() {
+		DutyService service = new DutyService();
+		int deleteCount =service.deleteDuty();
+		
+		return deleteCount;
+	}
+
+
+	public static int deleteDept() {
+		DeptService service = new DeptService();
+		int deleteCount =service.deleteDept();
+		
+		return deleteCount;
+	}
+
+
+	public static int deleteManager() {
+		ManagerService service = new ManagerService();
+		int deleteCount =service.deleteManager();
+		
+		return deleteCount;
+	}
+	
 	public static int deleteUser() {
 		UserService service = new UserService();
 		int deleteCount =service.deleteUser();

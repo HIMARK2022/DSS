@@ -68,5 +68,20 @@ public class DutyService {
 		
 		return insertCount;
 	}
+
+	public int deleteDuty() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int deleteCount = 0;
+		
+		try {
+			deleteCount = dutyDao.deleteDuty(session);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return deleteCount;
+	}
 	
 }

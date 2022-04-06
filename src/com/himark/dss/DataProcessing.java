@@ -110,7 +110,7 @@ public class DataProcessing {
 					c_rs = c_pstmt.executeQuery();
 					
 					while(c_rs.next()){
-						manager_list.add(new Manager(c_rs.getString("user_id"), leftJoinUser.get(i).getUserId(), "T1", null, null));
+						manager_list.add(new Manager(c_rs.getString("user_id"), leftJoinUser.get(i).getUserId(), "T1", null, null, null));
 					}
 					
 					sql ="select u0.user_id from user as u "
@@ -123,7 +123,7 @@ public class DataProcessing {
 					c_rs = c_pstmt.executeQuery();
 					
 					while(c_rs.next()){
-						manager_list.add(new Manager(c_rs.getString("user_id"), leftJoinUser.get(i).getUserId(), "T1", null, null));
+						manager_list.add(new Manager(c_rs.getString("user_id"), leftJoinUser.get(i).getUserId(), "T1", null, null, null));
 					}
 				}
 				

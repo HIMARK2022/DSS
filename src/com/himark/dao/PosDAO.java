@@ -39,5 +39,12 @@ public class PosDAO {
 		
 		return insertCount;
 	}
+
+	public int deleteUser(SqlSession session) {
+		int deleteCount = 0; 
+		deleteCount = session.delete("pos.deletePos");
+		
+		return deleteCount;
+	}
 	
 }

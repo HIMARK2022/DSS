@@ -83,5 +83,20 @@ public class DeptService {
 		
 		return insertCount;
 	}
+
+	public int deleteDept() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int deleteCount = 0;
+		
+		try {
+			deleteCount = deptDao.deleteDept(session);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return deleteCount;
+	}
 	
 }

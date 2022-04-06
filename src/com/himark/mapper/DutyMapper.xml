@@ -31,4 +31,9 @@
 		where duty_id not in (select duty_id from duty)
 	</insert>
 	
+	<delete id="deleteDuty">
+		delete from duty 
+		where duty_id not in (select duty_id from temp_duty)
+	</delete>
+	
 </mapper>

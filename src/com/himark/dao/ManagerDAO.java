@@ -18,4 +18,11 @@ public class ManagerDAO {
 		return insertCount;
 	}
 
+	public int deleteManager(SqlSession session) {
+		int deleteCount = 0; 
+		deleteCount = session.delete("manager.deleteManager");
+		
+		return deleteCount;
+	}
+
 }

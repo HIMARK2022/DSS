@@ -25,7 +25,14 @@
 			    user_id
 			from temp_user as t
 			inner join dept as d on t.dept_id = d.dept_id
-			where t.authority_code !='A3' and t.user_id = #{userId}
+			where t.authority_code !='A3' 
+			and t.user_id = #{userId}
 	</insert>
+	
+	<delete id="deleteManager">
+		delete from manager 
+		where manager_id not in (select user_id from temp_user)
+		or approval_target not in (select user_id from temp_user)
+	</delete>
 	
 </mapper>

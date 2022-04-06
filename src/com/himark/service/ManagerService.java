@@ -22,4 +22,19 @@ public class ManagerService {
 		return insertCount;
 	}
 
+	public int deleteManager() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int deleteCount = 0;
+		
+		try {
+			deleteCount = managerDao.deleteManager(session);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return deleteCount;
+	}
+
 }

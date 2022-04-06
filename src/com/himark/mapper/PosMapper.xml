@@ -31,4 +31,9 @@
 		where pos_id not in (select pos_id from pos)
 	</insert>
 	
+	<delete id="deletePos">
+		delete from pos 
+		where pos_id not in (select pos_id from temp_pos)
+	</delete>
+	
 </mapper>

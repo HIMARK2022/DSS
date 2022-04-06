@@ -39,4 +39,9 @@
 		where dept_id not in (select dept_id from dept)
 	</insert>
 	
+	<delete id="deleteDept">
+		delete from dept 
+		where dept_id not in (select dept_id from temp_dept)
+	</delete>
+	
 </mapper>

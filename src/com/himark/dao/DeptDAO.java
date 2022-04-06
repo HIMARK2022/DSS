@@ -46,5 +46,12 @@ public class DeptDAO {
 		
 		return insertCount;
 	}
+
+	public int deleteDept(SqlSession session) {
+		int deleteCount = 0; 
+		deleteCount = session.delete("dept.deleteDept");
+		
+		return deleteCount;
+	}
 	
 }

@@ -32,8 +32,6 @@ public class DataSynchronization {
 		DataProcess.saveTempDept(dept);
 		DataProcess.saveTempUser(user);
 		
-		
-		
 		// 새로운 데이터만 insert
 		int posInsertCount = DataProcess.insertPos();
 		int dutyInsertCount = DataProcess.insertDuty();
@@ -42,7 +40,11 @@ public class DataSynchronization {
 		int userInsertCount = DataProcess.insertUser();
 		
 		//데이터가 없거나 '퇴직'상태일시 퇴직처리
-		int deleteCount = DataProcess.deleteUser();
+		int posDeleteCount = DataProcess.deletePos();
+		int dutyDeleteCount = DataProcess.deleteDuty();
+		int deptDeleteCount = DataProcess.deleteDept();
+		int managerDeleteCount = DataProcess.deleteManager();
+		int userDeleteCount = DataProcess.deleteUser();
 		
 		System.out.println("================================");
 		System.out.println("user에 insert한 개수: " + userInsertCount + "개");
@@ -50,8 +52,13 @@ public class DataSynchronization {
 		System.out.println("duty에 insert한 개수: " + dutyInsertCount + "개");
 		System.out.println("dept에 insert한 개수: " + deptInsertCount + "개");
 		System.out.println("manager에 insert한 횟수: " + managerInsertCount + "번");
-		System.out.println("user에 delete한 개수: " + deleteCount + "개");
 		System.out.println("================================");
+		System.out.println("pos에서 delete한 개수: " + posDeleteCount + "개");
+		System.out.println("duty에서 delete한 개수: " + dutyDeleteCount + "개");
+		System.out.println("dept에서 delete한 개수: " + deptDeleteCount + "개");
+		System.out.println("manager에서 delete한 개수: " + managerDeleteCount + "개");
+		System.out.println("user에서 delete했었던 개수: " + userDeleteCount + "개");
+		
 	}
 
 }
