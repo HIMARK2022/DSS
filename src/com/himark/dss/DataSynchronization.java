@@ -1,7 +1,13 @@
 package com.himark.dss;
 
+import java.io.File;
+
 public class DataSynchronization {
 	public static void main(String[] args) {
+		
+		String path = "E:" + File.separator + "DSS"; // 폴더 경로
+		CreateLog.createFolder(path);
+		CreateLog.createFile(path);
 		
 		// 프로퍼티 파일 읽기
 		String[] user = new String[6];
@@ -63,6 +69,7 @@ public class DataSynchronization {
 		System.out.println("pos에 update한 개수: " + DataProcess.updatePos() + "개");
 		System.out.println("duty에 update한 개수: " + DataProcess.updateDuty() + "개");
 		System.out.println("dept에 update한 개수: " + DataProcess.updateDept() + "개");
+		
 	}
 
 }
