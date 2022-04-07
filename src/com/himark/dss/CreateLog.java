@@ -4,8 +4,23 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class CreateLog {
+	
+	public static String getRealTime() {
+		long systemTime = System.currentTimeMillis();
+		
+		SimpleDateFormat logSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
+		
+		String realTime = "["+ logSdf.format(systemTime) + "] ";
+		
+		//System.out.println(realTime);
+		
+		return realTime;
+		
+	}
+	
 	public static void createFolder(String path) {
 		
 		File Folder = new File(path);
@@ -25,12 +40,12 @@ public class CreateLog {
 		}
 	}
 	
-	public static void createFile(String path) {
+	public static File createFile(String path) {
 		
 		// 오늘 날짜 포맷에 맞게 설정
-		SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd"); 
+		SimpleDateFormat folderSdf = new SimpleDateFormat("yyMMdd", Locale.KOREA);
 		Calendar calendar = Calendar.getInstance(); 
-		String today = sdf.format(calendar.getTime()); 
+		String today = folderSdf.format(calendar.getTime());
 
 		// 파일 이름
 		String fileName = File.separator + "dss_";
@@ -52,6 +67,8 @@ public class CreateLog {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		return file;
 	}
 	
 }
