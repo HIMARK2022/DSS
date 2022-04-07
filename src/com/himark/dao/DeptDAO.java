@@ -20,14 +20,14 @@ public class DeptDAO {
 	
 	public int insertTempName(SqlSession session, String table) {
 		int insertCount = 0; 
-		insertCount = session.insert("dept.insertTempName", table);
+		insertCount = session.update("dept.insertTempName", table);
 		
 		return insertCount;
 	}
 	
 	public int insertTempUpperId(SqlSession session, String table) {
-		int insertCount = 0; 
-		insertCount = session.insert("dept.insertTempUpperId", table);
+		int insertCount = 0;
+		insertCount = session.update("dept.insertTempUpperId", table);
 		
 		return insertCount;
 	}

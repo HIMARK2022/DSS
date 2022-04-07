@@ -20,7 +20,7 @@ public class DutyDAO {
 	
 	public int insertTempName(SqlSession session, String table) {
 		int insertCount = 0; 
-		insertCount = session.insert("duty.insertTempName", table);
+		insertCount = session.update("duty.insertTempName", table);
 		
 		return insertCount;
 	}

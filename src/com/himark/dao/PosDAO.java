@@ -20,7 +20,7 @@ public class PosDAO {
 	
 	public int insertTempName(SqlSession session, String table) {
 		int insertCount = 0; 
-		insertCount = session.insert("pos.insertTempName", table);
+		insertCount = session.update("pos.insertTempName", table);
 		
 		return insertCount;
 	}

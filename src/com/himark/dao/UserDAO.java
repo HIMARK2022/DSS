@@ -24,35 +24,35 @@ public class UserDAO {
 	
 	public int insertTempName(SqlSession session, String table) {
 		int insertCount = 0; 
-		insertCount = session.insert("user.insertTempName", table);
+		insertCount = session.update("user.insertTempName", table);
 		
 		return insertCount;
 	}
 	
 	public int insertTempPosId(SqlSession session, String table) {
 		int insertCount = 0; 
-		insertCount = session.insert("user.insertTempPosId", table);
+		insertCount = session.update("user.insertTempPosId", table);
 		
 		return insertCount;
 	}
 	
 	public int insertTempDutyId(SqlSession session, String table) {
 		int insertCount = 0; 
-		insertCount = session.insert("user.insertTempDutyId", table);
+		insertCount = session.update("user.insertTempDutyId", table);
 		
 		return insertCount;
 	}
 	
 	public int insertTempDeptId(SqlSession session, String table) {
 		int insertCount = 0; 
-		insertCount = session.insert("user.insertTempDeptId", table);
+		insertCount = session.update("user.insertTempDeptId", table);
 		
 		return insertCount;
 	}
 	
 	public int insertTempAc(SqlSession session, String table) {
 		int insertCount = 0; 
-		insertCount = session.insert("user.insertTempAc", table);
+		insertCount = session.update("user.insertTempAc", table);
 		
 		return insertCount;
 	}
