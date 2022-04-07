@@ -4,12 +4,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class DataSynchronization {
 	public static void main(String[] args) {
 		
 		// 로그 파일 생성
-		String path = "E:" + File.separator + "DSS_log"; // 폴더 경로
+		String path = "E:" + File.separator + "DSS_LOG"; // 폴더 경로
 		CreateLog.createFolder(path);
 		File file = CreateLog.createFile(path);
 		
@@ -18,7 +20,12 @@ public class DataSynchronization {
 			FileWriter fw = new FileWriter(file);
 			BufferedWriter writer = new BufferedWriter(fw);
 			
-			writer.write(CreateLog.getRealTime() + "인사연동 시작");
+			SimpleDateFormat logSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
+			
+			long start = System.currentTimeMillis();
+			String startTime = "["+ logSdf.format(start) + "] ";
+			
+			writer.write(startTime + "인사연동 시작");
 			writer.newLine();
 			
 			// 프로퍼티 파일 읽기
@@ -43,9 +50,6 @@ public class DataSynchronization {
 			dept[0] = DataProcess.getProperty("dept.dept_id");
 			dept[1] = DataProcess.getProperty("dept.dept_name");
 			dept[2] = DataProcess.getProperty("dept.upper_dept_id");
-			
-//			writer.write(CreateLog.getRealTime() + "프로퍼티 파일 읽어옴");
-//			writer.newLine();
 			
 			
 			// 고객사 데이터를 마크애니 DB의 temp 테이블에 저장
@@ -124,38 +128,19 @@ public class DataSynchronization {
 			writer.write(CreateLog.getRealTime() + "user 테이블이 " + userUpdateCount + "건 변경되었습니다.");
 			writer.newLine();
 			
-			writer.write("--------------------------------------------------------------");
+			writer.write("-------------------------------------------------------------------");
 			writer.newLine();
 			
+			long finish = System.currentTimeMillis();
+			String finishTime = "["+ logSdf.format(finish) + "] ";
 			
-			writer.write(CreateLog.getRealTime() + "인사연동 종료");
+			writer.write(finishTime + "인사연동 종료 - 걸린 시간: " + (finish-start)/1000.0 + "초");
 			
 			writer.close();
 			
 		} catch (IOException e) {
 			
 		}
-		
-		
-		/*
-		System.out.println("================================");
-		System.out.println("user에 insert한 개수: " + userInsertCount + "개");
-		System.out.println("pos에 insert한 개수: " + posInsertCount + "개");
-		System.out.println("duty에 insert한 개수: " + dutyInsertCount + "개");
-		System.out.println("dept에 insert한 개수: " + deptInsertCount + "개");
-		System.out.println("manager에 insert한 횟수: " + managerInsertCount + "번");
-		System.out.println("================================");
-		System.out.println("pos에서 delete한 개수: " + posDeleteCount + "개");
-		System.out.println("duty에서 delete한 개수: " + dutyDeleteCount + "개");
-		System.out.println("dept에서 delete한 개수: " + deptDeleteCount + "개");
-		System.out.println("manager에서 delete한 개수: " + managerDeleteCount + "개");
-		System.out.println("user에서 delete했었던 개수: " + userDeleteCount + "개");
-		System.out.println("================================");
-		System.out.println("user에 update한 개수: " + DataProcess.updateUser() + "개");
-		System.out.println("pos에 update한 개수: " + DataProcess.updatePos() + "개");
-		System.out.println("duty에 update한 개수: " + DataProcess.updateDuty() + "개");
-		System.out.println("dept에 update한 개수: " + DataProcess.updateDept() + "개");
-		*/
 		
 	}
 
