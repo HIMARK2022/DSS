@@ -7,15 +7,17 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import com.himark.excel.ExcelProcess;
+
 public class DataSynchronization {
 	public static void main(String[] args) {
 		
 		// 로그 파일 생성
-		String path = "E:" + File.separator + "DSS_LOG"; // 폴더 경로
+		String path = "C:" + File.separator + "DSS_LOG"; // 폴더 경로
 		CreateLog.createFolder(path);
 		File file = CreateLog.createFile(path);
 		
-//		ExcelProcess.csvProcess("C:/File/", "부서");	// CSV
+		ExcelProcess.csvProcess("C:/DSS/File/", "사용자");	// CSV
 		
 		try {
 			FileWriter fw = new FileWriter(file);

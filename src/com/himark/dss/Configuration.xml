@@ -5,7 +5,7 @@
 
 <configuration>
 	
-	<properties url="file:///C:/properties/data.properties" />
+	<properties url="file:///C:/DSS/properties/data.properties" />
 	
 	<environments default="markany">
 		<environment id="client">
