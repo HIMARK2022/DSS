@@ -15,6 +15,7 @@ public class DataSynchronization {
 		CreateLog.createFolder(path);
 		File file = CreateLog.createFile(path);
 		
+//		ExcelProcess.csvProcess("C:/File/", "부서");	// CSV
 		
 		try {
 			FileWriter fw = new FileWriter(file);
@@ -141,7 +142,6 @@ public class DataSynchronization {
 		} catch (IOException e) {
 			
 		}
-		
 	}
 
 }

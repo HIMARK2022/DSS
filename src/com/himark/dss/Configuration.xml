@@ -5,7 +5,7 @@
 
 <configuration>
 	
-	<properties url="file:///C:/properties/db.properties" />
+	<properties url="file:///C:/properties/data.properties" />
 	
 	<environments default="markany">
 		<environment id="client">
@@ -37,6 +37,7 @@
 		<mapper resource="com/himark/mapper/DutyMapper.xml" />
 		<mapper resource="com/himark/mapper/DeptMapper.xml" />
 		<mapper resource="com/himark/mapper/ManagerMapper.xml" />
+		<mapper resource="com/himark/mapper/ExcelMapper.xml" />
 	</mappers>
 		
 </configuration>
