@@ -5,19 +5,20 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
 import java.util.Locale;
 
+import com.himark.data.Info;
 import com.himark.excel.ExcelProcess;
 
 public class DataSynchronization {
 	public static void main(String[] args) {
 		
 		// 로그 파일 생성
-		String path = "C:" + File.separator + "DSS_LOG"; // 폴더 경로
+		String path = "C:" + File.separator + "DSS" + File.separator + "DSS_LOG"; // 폴더 경로
 		CreateLog.createFolder(path);
 		File file = CreateLog.createFile(path);
 		
-		ExcelProcess.csvProcess("C:/DSS/File/", "사용자");	// CSV
 		
 		try {
 			FileWriter fw = new FileWriter(file);
@@ -26,7 +27,8 @@ public class DataSynchronization {
 			SimpleDateFormat logSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
 			
 			long start = System.currentTimeMillis();
-			String startTime = "["+ logSdf.format(start) + "] ";
+			String st = logSdf.format(start);
+			String startTime = "["+ st + "] ";
 			
 			writer.write(startTime + "인사연동 시작");
 			writer.newLine();
@@ -135,11 +137,16 @@ public class DataSynchronization {
 			writer.newLine();
 			
 			long finish = System.currentTimeMillis();
-			String finishTime = "["+ logSdf.format(finish) + "] ";
+			String ft = logSdf.format(finish);
+			String finishTime = "["+ ft + "] ";
 			
 			writer.write(finishTime + "인사연동 종료 - 걸린 시간: " + (finish-start)/1000.0 + "초");
 			
 			writer.close();
+			
+			DataProcess.insertInfo(new Info(userInsertCount, userUpdateCount, userDeleteCount, 
+								            deptInsertCount, deptUpdateCount, deptDeleteCount,
+								            st, ft));
 			
 		} catch (IOException e) {
 			
