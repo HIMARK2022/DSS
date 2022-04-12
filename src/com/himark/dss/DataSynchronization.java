@@ -34,6 +34,9 @@ public class DataSynchronization {
 			writer.newLine();
 			
 			// 프로퍼티 파일 읽기
+			String type = DataProcess.getProperty("type"); // DB인지 파일인지 타입 판별
+			System.out.println(type);
+			
 			String[] user = new String[6];
 			String[] pos = new String[2];
 			String[] duty = new String[2];
@@ -55,6 +58,22 @@ public class DataSynchronization {
 			dept[0] = DataProcess.getProperty("dept.dept_id");
 			dept[1] = DataProcess.getProperty("dept.dept_name");
 			dept[2] = DataProcess.getProperty("dept.upper_dept_id");
+			
+			
+			// 프로퍼티에서 파일 이름 가져옴
+			if("CSV".equals(type)) {
+				// CSV 파일 읽어오기
+				LinkedList<String> filename = new LinkedList<String>();
+				String filepath = MySqlSessionFactory.getClientSqlSessionFactory().getConfiguration().getVariables().getProperty("filepath");
+
+				filename = DataProcess.getPropertyFile("filename");
+
+				for (int i = 0; i < filename.size(); i++) {
+					System.out.println("\nFilePath: " + filepath + filename.get(i) + ".csv");
+					ExcelProcess.csvProcess(filepath, filename.get(i));
+				}
+				
+			}
 			
 			
 			// 고객사 데이터를 마크애니 DB의 temp 테이블에 저장

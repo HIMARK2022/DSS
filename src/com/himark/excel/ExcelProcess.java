@@ -16,7 +16,6 @@ public class ExcelProcess {
 	
 	public static void csvProcess(String path, String fileName) {
 		List<String> firstLine = new ArrayList<String>();
-		ArrayList<String> list = new ArrayList<String>();
 		ExcelService excelService = new ExcelService();
 		BufferedReader br = null;
 		String var = "";
@@ -26,25 +25,25 @@ public class ExcelProcess {
 			br = Files.newBufferedReader(Paths.get(path + "/" + fileName + ".csv"));
 			Charset.forName("UTF-8");
 			firstLine = Arrays.asList(br.readLine().split(",")); // 첫행
-
+			
 			for (int i = 0; i < firstLine.size(); i++) {
 				if (i == firstLine.size() - 1) {
 					var += "`" + firstLine.get(i) + "`" + " VARCHAR(100)";
 				} 
-				else {
+ 				else {
 					var += "`" + firstLine.get(i) + "`" + " VARCHAR(100),";
 				}
 			}
 			
-			String createTable = "CREATE TABLE " + fileName + " (" + var + ")";
-			String dropTable = "DROP TABLE IF EXISTS `" + fileName + "`";
+			String createTable = "CREATE TABLE `" + fileName + "_client`" + "(" + var + ")";
+			String dropTable = "DROP TABLE IF EXISTS `" + fileName + "_client" + "`";
 			
 			//DROP TABLE IF EXISTS
 			excelService.dropTable(dropTable);
-			System.out.println("기존 '"+ fileName +"' 테이블 삭제");
+			System.out.println("기존 '"+ fileName + "_client" + "' 테이블 삭제");
 			//CREATE TABLE
 			excelService.createTable(createTable);
-			System.out.println("'"+fileName+"' 테이블 생성");
+			System.out.println("'"+fileName + "_client" +"' 테이블 생성");
 			
 			//INSERT
 			List<String> tmpList = new ArrayList<String>();
@@ -52,7 +51,7 @@ public class ExcelProcess {
 				while ((line = br.readLine()) != null) {
 					String array[] = line.split(",", -1);
 					tmpList = Arrays.asList(array);
-					String insertTable = "INSERT INTO `" + fileName + "` VALUES (";
+					String insertTable = "INSERT INTO `" + fileName + "_client" + "` VALUES (";
 					for (int j = 0; j < firstLine.size(); j++) {
 						if (j == firstLine.size() - 1) {
 							if (tmpList.get(j).equals("")) {
@@ -92,4 +91,5 @@ public class ExcelProcess {
 			}
 		}
 	}
+	
 }
