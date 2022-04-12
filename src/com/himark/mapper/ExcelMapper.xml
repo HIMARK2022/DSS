@@ -3,11 +3,11 @@
 
 <mapper namespace="excel">
 
-	<update id="createTable" parameterType="map">
+	<update id="createTable">
 		${createTable}
 	</update>
 	
-	<update id="dropTable" parameterType="map">
+	<update id="dropTable">
 		${dropTable}
 	</update>
 	
