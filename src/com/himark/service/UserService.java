@@ -102,6 +102,21 @@ public class UserService {
 		return insertCount;
 	}
 	
+	public int updateTempAc() {
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int updateCount = 0;
+		
+		try {
+			updateCount = userDao.updateTempAc(session);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return updateCount;
+	}
+	
 	public int deleteTemp() {
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int deleteCount = 0;

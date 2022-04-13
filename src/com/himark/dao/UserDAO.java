@@ -57,6 +57,13 @@ public class UserDAO {
 		return insertCount;
 	}
 	
+	public int updateTempAc(SqlSession session) {
+		int updateCount = 0;
+		updateCount = session.update("user.updateTempAc");
+		
+		return updateCount;
+	}
+	
 	// temp 테이블 비우기
 	public int deleteTemp(SqlSession session) {
 		int deleteCount = 0; 

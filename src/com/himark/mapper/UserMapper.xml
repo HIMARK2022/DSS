@@ -52,6 +52,19 @@
 		set temp_user.authority_code = ${schema}.${user.authority_code}
 	</update>
 	
+	<update id="updateTempAc">
+		update temp_user as u
+			left join temp_duty as d
+			on u.duty_id = d.duty_id
+		set u.authority_code = 
+			case
+		    when d.duty_name not like '%장' and d.duty_name != '대표' then 'A1'
+		    when d.duty_name like '%장' then 'A2'
+		    when d.duty_name = '대표' then 'A2'
+		    when d.duty_name is null then 'A3'
+		end;
+	</update>
+	
 	<!-- temp 테이블 비우기 -->
 	<delete id="deleteTemp">
 		delete from temp_user
@@ -66,7 +79,7 @@
 	<insert id="insertUser">
 		insert into user (user_id, user_password, user_name, pos_id, duty_id, dept_id, authority_code, current_state, flag)
 		select user_id, user_id, user_name, pos_id, duty_id, dept_id, authority_code, '재직', '인사연동'
-		from temp_user 
+		from temp_user
 		where user_id not in (select user_id from user)
 	</insert>
 	

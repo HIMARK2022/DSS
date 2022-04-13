@@ -1,13 +1,17 @@
 package com.himark.dss;
 
+import java.io.UnsupportedEncodingException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import com.himark.data.Info;
 import com.himark.data.User;
 import com.himark.service.DeptService;
 import com.himark.service.DutyService;
+import com.himark.service.InfoService;
 import com.himark.service.ManagerService;
 import com.himark.service.PosService;
 import com.himark.service.UserService;
@@ -20,7 +24,33 @@ public class DataProcess {
 		SqlSessionFactory c_ssf = MySqlSessionFactory.getClientSqlSessionFactory();
 		Properties properties = c_ssf.getConfiguration().getVariables();
 		
-		String table = properties.getProperty(property).split("\\.")[0];
+		String table = null;
+		try {
+			table = new String(properties.getProperty(property).getBytes("ISO-8859-1"), "UTF-8").split("\\.")[0];
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		return table;
+	}
+	
+	// 프로퍼티 파일 읽기
+	public static LinkedList<String> getPropertyFile(String property) {
+		
+		SqlSessionFactory c_ssf = MySqlSessionFactory.getClientSqlSessionFactory();
+		Properties properties = c_ssf.getConfiguration().getVariables();
+		LinkedList<String> table = new LinkedList<String>();
+		String[] filelist = properties.getProperty(property).split(",");
+		
+		try {
+			  for(int i=0; i<filelist.length; i++) {
+				  table.add(new String(properties.getProperty(property).getBytes("ISO-8859-1"), "UTF-8").split(",")[i]);
+			  }
+		   
+		} catch (UnsupportedEncodingException e) {
+		   e.printStackTrace();
+		}
+
 		
 		return table;
 	}
@@ -64,6 +94,8 @@ public class DataProcess {
 			insertCount = userService.insertTempAc(table[5]);
 			System.out.println(insertCount + "건이 temp_user의 authority_code 컬럼에 추가되었습니다.");
 		}
+		
+		userService.updateTempAc();
 
 	}
 	
@@ -164,7 +196,7 @@ public class DataProcess {
 		int insertCount = 0;
 		
 		for(User user : list) {
-			insertCount = service_manager.insertManager(user.getUserId());
+			insertCount += service_manager.insertManager(user.getUserId());
 		}
 		
 		return insertCount;
@@ -172,35 +204,35 @@ public class DataProcess {
 	
 	public static int deletePos() {
 		PosService service = new PosService();
-		int deleteCount =service.deletePos();
+		int deleteCount = service.deletePos();
 		
 		return deleteCount;
 	}
 	
 	public static int deleteDuty() {
 		DutyService service = new DutyService();
-		int deleteCount =service.deleteDuty();
+		int deleteCount = service.deleteDuty();
 		
 		return deleteCount;
 	}
 
 	public static int deleteDept() {
 		DeptService service = new DeptService();
-		int deleteCount =service.deleteDept();
+		int deleteCount = service.deleteDept();
 		
 		return deleteCount;
 	}
 
 	public static int deleteManager() {
 		ManagerService service = new ManagerService();
-		int deleteCount =service.deleteManager();
+		int deleteCount = service.deleteManager();
 		
 		return deleteCount;
 	}
 	
 	public static int deleteUser() {
 		UserService service = new UserService();
-		int deleteCount =service.deleteUser();
+		int deleteCount = service.deleteUser();
 		
 		return deleteCount;
 	}
@@ -231,6 +263,14 @@ public class DataProcess {
 		int updateCount = deptService.updateDept();
 		
 		return updateCount;
+	}
+	
+	public static int insertInfo(Info info) {
+		InfoService infoService = new InfoService();
+		infoService.delete();
+		int insertCount = infoService.insert(info);
+		
+		return insertCount;
 	}
 	
 }
