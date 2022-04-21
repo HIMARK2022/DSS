@@ -130,13 +130,13 @@ public class DataProcess {
 						for (int j = 0; j < columnList.size(); j++) {
 							if (j == columnList.size() - 1) {
 								if (tmpList.get(j).equals("")) {
-									insertTable += null;
+									insertTable += "''";
 								} else {
 									insertTable += "'" + tmpList.get(j) + "'";
 								}
 							} else {
 								if (tmpList.get(j).equals("")) {
-									insertTable += null + ",";
+									insertTable += "''" + ",";
 								} else {
 									insertTable += "'" + tmpList.get(j) + "',";
 								}

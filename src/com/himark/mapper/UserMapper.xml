@@ -75,13 +75,14 @@
 			user.pos_id = temp_user.pos_id,
 			user.duty_id = temp_user.duty_id,
 			user.dept_id = temp_user.dept_id,
-			user.authority_code = temp_user.authority_code
+			user.authority_code = temp_user.authority_code,
+			user.flag = '인사연동'
 		</set>
-		WHERE user.user_name != temp_user.user_name
+		WHERE (user.user_name != temp_user.user_name
 		OR user.pos_id != temp_user.pos_id
 		OR user.duty_id != temp_user.duty_id
 		OR user.dept_id != temp_user.dept_id
-		OR user.authority_code != temp_user.authority_code
+		OR user.authority_code != temp_user.authority_code)
 		AND user.current_state = '재직' 
 		AND user.flag = '인사연동'
 	</update>
