@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 
-import com.himark.data.User;
+import com.himark.vo.JoinVO;
+import com.himark.vo.UserVO;
 
 public class UserDAO {
 	
@@ -14,78 +15,47 @@ public class UserDAO {
 		return userDao;
 	}
 	
-	// temp 테이블에 insert
-	public int insertTempId(SqlSession session, String table) {
-		int insertCount = 0; 
-		insertCount = session.insert("user.insertTempId", table);
+	public int deleteTemp(SqlSession session) {
 		
-		return insertCount;
+		int deleteCount = 0;
+		deleteCount = session.delete("user.deleteTemp");
+		
+		return deleteCount;
 	}
 	
-	public int insertTempName(SqlSession session, String table) {
-		int insertCount = 0; 
-		insertCount = session.update("user.insertTempName", table);
+	public int insertTemp(SqlSession session, JoinVO joinUser) {
 		
-		return insertCount;
-	}
-	
-	public int insertTempPosId(SqlSession session, String table) {
-		int insertCount = 0; 
-		insertCount = session.update("user.insertTempPosId", table);
+		int insertCount = 0;
+		insertCount = session.insert("user.insertTemp", joinUser);
 		
-		return insertCount;
-	}
-	
-	public int insertTempDutyId(SqlSession session, String table) {
-		int insertCount = 0; 
-		insertCount = session.update("user.insertTempDutyId", table);
-		
-		return insertCount;
-	}
-	
-	public int insertTempDeptId(SqlSession session, String table) {
-		int insertCount = 0; 
-		insertCount = session.update("user.insertTempDeptId", table);
-		
-		return insertCount;
-	}
-	
-	public int insertTempAc(SqlSession session, String table) {
-		int insertCount = 0; 
-		insertCount = session.update("user.insertTempAc", table);
-		
-		return insertCount;
+		return insertCount;	
 	}
 	
 	public int updateTempAc(SqlSession session) {
+		
 		int updateCount = 0;
 		updateCount = session.update("user.updateTempAc");
 		
 		return updateCount;
 	}
 	
-	// temp 테이블 비우기
-	public int deleteTemp(SqlSession session) {
-		int deleteCount = 0; 
-		deleteCount = session.delete("user.deleteTemp");
-		
-		return deleteCount;
-	}
-
 	public int insertUser(SqlSession session) {
+		
 		int insertCount = 0;
 		insertCount = session.insert("user.insertUser"); 
 		
 		return insertCount;
 	}
 
-	public List<User> selectUser(SqlSession session) {
-		List<User> list = session.selectList("user.selectUser");
+	public List<UserVO> selectUser(SqlSession session) {
+		
+		List<UserVO> list = session.selectList("user.selectUser");
 		
 		return list;
 	}
 
 	public int deleteUser(SqlSession session) {
+		
 		int deleteCount = 0; 
 		deleteCount = session.delete("user.deleteUser");
 		
@@ -93,6 +63,7 @@ public class UserDAO {
 	}
 	
 	public int updateUser(SqlSession session) {
+		
 		int updateCount = 0;
 		updateCount = session.update("user.updateUser");
 		

@@ -1,6 +1,6 @@
-package com.himark.data;
+package com.himark.vo;
 
-public class Info {
+public class InfoVO {
 	private int userInsertCount;
 	private int userUpdateCount;
 	private int userDeleteCount;
@@ -10,8 +10,8 @@ public class Info {
 	private String start;
 	private String finish;
 	
-	public Info(int userInsertCount, int userUpdateCount, int userDeleteCount, int deptInsertCount, int deptUpdateCount,
-			int deptDeleteCount, String start, String finish) {
+	public InfoVO(int userInsertCount, int userUpdateCount, int userDeleteCount, int deptInsertCount, int deptUpdateCount,
+				  int deptDeleteCount, String start, String finish) {
 		super();
 		this.userInsertCount = userInsertCount;
 		this.userUpdateCount = userUpdateCount;

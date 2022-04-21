@@ -5,32 +5,44 @@
 
 <configuration>
 	
-	<properties url="file:///C:/DSS/properties/data.properties" />
+	<properties url="file:///C:/DSS/properties/test.properties" />
 	
 	<settings>
 		<setting name="jdbcTypeForNull" value="VARCHAR"/>
 	</settings>
 
-	<environments default="markany">	
+	<environments default="markany">
 		<environment id="markany">
 			<transactionManager type="JDBC" />
 			<dataSource type="POOLED">
 				<property name="driver" value="com.mysql.cj.jdbc.Driver" />
 				<property name="url"
-					      value="jdbc:mysql://markany.covhf2smsoid.ap-northeast-2.rds.amazonaws.com:3306/madb?useUnicode=yes&amp;characterEncoding=utf8&amp;useSSL=false" />
-				<property name="username" value="markany" />
-				<property name="password" value="markany!" />
+					      value="jdbc:mysql://localhost:3306/comdb?useSSL=false" />
+				<property name="username" value="test" />
+				<property name="password" value="test" />
+			</dataSource>
+		</environment>
+	
+		<environment id="client">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url"
+					      value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
 			</dataSource>
 		</environment>
 	</environments>
-
+	
 	<mappers>
-		<mapper resource="com/himark/mapper/UserMapper.xml" /> 
-		<mapper resource="com/himark/mapper/PosMapper.xml" /> 
+		<mapper resource="com/himark/mapper/ClientMapper.xml" />
+		<mapper resource="com/himark/mapper/MarkanyMapper.xml" />
+		<mapper resource="com/himark/mapper/UserMapper.xml" />
+		<mapper resource="com/himark/mapper/PosMapper.xml" />
 		<mapper resource="com/himark/mapper/DutyMapper.xml" />
 		<mapper resource="com/himark/mapper/DeptMapper.xml" />
 		<mapper resource="com/himark/mapper/ManagerMapper.xml" />
-		<mapper resource="com/himark/mapper/ExcelMapper.xml" />
 		<mapper resource="com/himark/mapper/InfoMapper.xml" />
 	</mappers>
 		

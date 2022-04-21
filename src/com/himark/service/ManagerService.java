@@ -2,13 +2,15 @@ package com.himark.service;
 
 import org.apache.ibatis.session.SqlSession;
 
-import com.himark.dss.MySqlSessionFactory;
 import com.himark.dao.ManagerDAO;
+import com.himark.dss.MySqlSessionFactory;
 
 public class ManagerService {
+	
 	private ManagerDAO managerDao = ManagerDAO.getInstance();
 	
 	public int insertManager(String userId) {
+		
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int insertCount = 0; // 반환할 값
 		
@@ -23,6 +25,7 @@ public class ManagerService {
 	}
 
 	public int deleteManager() {
+		
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int deleteCount = 0;
 		
@@ -36,5 +39,5 @@ public class ManagerService {
 		
 		return deleteCount;
 	}
-
+	
 }

@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="excel">
-
-	<update id="createTable">
-		${createTable}
+<mapper namespace="markany">
+	
+	<update id="dropTable" parameterType="String">
+		DROP TABLE IF EXISTS ${tempTable}
 	</update>
 	
-	<update id="dropTable">
-		${dropTable}
+	<update id="createTable">
+		${createTable}
 	</update>
 	
 	<insert id="insertTable">
 		${insertTable}
 	</insert>
 	
-
-
 </mapper>

@@ -4,13 +4,14 @@
 <mapper namespace="info">
 	
 	<delete id="delete">
-		delete from sysinfo
+		DELETE FROM sysinfo
 	</delete>
 	
 	<insert id="insert">
-		insert into sysinfo values(#{userInsertCount}, #{userUpdateCount}, #{userDeleteCount},
-								   #{deptInsertCount}, #{deptUpdateCount}, #{deptDeleteCount},
-								   #{start}, #{finish})
+		INSERT INTO sysinfo 
+		VALUES(#{userInsertCount}, #{userUpdateCount}, #{userDeleteCount},
+			   #{deptInsertCount}, #{deptUpdateCount}, #{deptDeleteCount},
+			   #{start}, #{finish})
 	</insert>
 	
 </mapper>

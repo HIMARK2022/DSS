@@ -2,46 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="pos">
-
-	<resultMap type="com.himark.data.Pos" id="posMap">
-		<result property="posId" column="pos_id"/>
-		<result property="posName" column="pos_name"/>
-	</resultMap>
 	
-	<!-- temp 테이블에 insert -->
-	<insert id="insertTempId">
-		insert into temp_pos(pos_id) select ${pos.pos_id} from ${schema}.${table}
-	</insert>
-	
-	<update id="insertTempName">
-		update temp_pos
-		inner join ${schema}.${table}
-		on temp_pos.pos_id = ${schema}.${pos.pos_id}
-		set temp_pos.pos_name = ${schema}.${pos.pos_name}
-	</update>
-	
-	<!-- temp 테이블 비우기 -->
 	<delete id="deleteTemp">
-		delete from temp_pos
+		DELETE FROM temp_pos
 	</delete>
 	
+	<insert id="insertTemp" parameterType="com.himark.vo.JoinVO">
+		INSERT INTO temp_pos
+		SELECT ${pos.pos_id},
+		       ${pos.pos_name}
+		FROM ${defaultTable}
+		<foreach collection="joinTables" item="table" separator=" ">
+			LEFT JOIN ${table}
+			ON ${pos.pos_id} = ${table}.${defaultColumn}
+		</foreach>
+	</insert>
+	
 	<insert id="insertPos">
-		insert into pos  
-		select pos_id, pos_name from temp_pos
-		where pos_id not in (select pos_id from pos)
+		INSERT INTO pos  
+		SELECT pos_id, pos_name FROM temp_pos
+		WHERE pos_id NOT IN (SELECT pos_id FROM pos)
 	</insert>
 	
 	<delete id="deletePos">
-		delete from pos 
-		where pos_id not in (select pos_id from temp_pos)
+		DELETE FROM pos 
+		WHERE pos_id NOT IN (SELECT pos_id FROM temp_pos)
 	</delete>
 	
 	<update id="updatePos">
-		update pos
-		inner join temp_pos
-		on pos.pos_id = temp_pos.pos_id
-		set pos.pos_name = temp_pos.pos_name
-		where pos.pos_name != temp_pos.pos_name;
+		UPDATE pos
+		INNER JOIN temp_pos
+		ON pos.pos_id = temp_pos.pos_id
+		SET pos.pos_name = temp_pos.pos_name
+		WHERE pos.pos_name != temp_pos.pos_name
 	</update>
 	
 </mapper>

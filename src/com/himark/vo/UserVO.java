@@ -1,6 +1,6 @@
-package com.himark.data;
+package com.himark.vo;
 
-public class User {
+public class UserVO {
 	private String userId; // user_id
 	private String userName; // user_name
 	private String posId; // pos_id
@@ -8,9 +8,7 @@ public class User {
 	private String deptId; // dept_id
 	private String authorityCode; // authority_code
 	
-	public User() {}
-
-	public User(String userId, String userName, String posId, String dutyId, String deptId, String authorityCode) {
+	public UserVO(String userId, String userName, String posId, String dutyId, String deptId, String authorityCode) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
@@ -66,12 +64,6 @@ public class User {
 
 	public void setAuthorityCode(String authorityCode) {
 		this.authorityCode = authorityCode;
-	}
-
-	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", userName=" + userName + ", posId=" + posId + ", dutyId=" + dutyId
-				+ ", deptId=" + deptId + ", authorityCode=" + authorityCode + "]";
 	}
 	
 }

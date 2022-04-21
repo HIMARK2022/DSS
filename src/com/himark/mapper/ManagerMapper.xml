@@ -3,36 +3,28 @@
 
 <mapper namespace="manager">
 
-	<resultMap type="com.himark.data.Manager" id="managerMap">
-		<result property="managerId" column="manager_id"/>
-		<result property="approvalTarget" column="approval_target"/>
-		<result property="classifyTarget" column="classify_target"/>
-		<result property="approvalStart" column="approval_start"/>
-		<result property="approvalFinish" column="approval_finish"/>
-		<result property="tempManager" column="temp_manager"/>
-	</resultMap>
-	
 	<insert id="insertManager">
-		insert into manager(manager_id, approval_target)
-			select distinct 
-				case authority_code
-					when 'A1' then (select user_id from temp_user as u1 
-									where authority_code = 'A2' and u1.dept_id = t.dept_id)
-					when 'A2' then (select distinct user_id from temp_user as u2
-									join dept on u2.dept_id = dept.upper_dept_id
-									where authority_code = 'A2' and dept.dept_id = d.dept_id)
-			    end as 'manager_id',
+		INSERT INTO manager(manager_id, approval_target)
+			SELECT DISTINCT 
+				CASE authority_code
+					WHEN 'A1' THEN (SELECT user_id FROM temp_user AS u1 
+									WHERE authority_code = 'A2' AND u1.dept_id = t.dept_id)
+					WHEN 'A2' THEN (SELECT DISTINCT user_id FROM temp_user AS u2
+									JOIN dept ON u2.dept_id = dept.upper_dept_id
+									WHERE authority_code = 'A2' AND dept.dept_id = d.dept_id)
+			    END AS 'manager_id',
 			    user_id
-			from temp_user as t
-			inner join dept as d on t.dept_id = d.dept_id
-			where t.authority_code !='A3' 
-			and t.user_id = #{userId}
+			FROM temp_user AS t
+			INNER JOIN dept AS d 
+			ON t.dept_id = d.dept_id
+			WHERE t.authority_code !='A3' 
+			AND t.user_id = #{userId}
 	</insert>
 	
 	<delete id="deleteManager">
-		delete from manager 
-		where manager_id not in (select user_id from temp_user)
-		or approval_target not in (select user_id from temp_user)
+		DELETE FROM manager 
+		WHERE manager_id NOT IN (SELECT user_id FROM temp_user)
+		OR approval_target NOT IN (SELECT user_id FROM temp_user)
 	</delete>
 	
 </mapper>

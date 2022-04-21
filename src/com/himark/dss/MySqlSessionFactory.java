@@ -10,7 +10,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 public class MySqlSessionFactory {
 	
-	static SqlSessionFactory ma_ssf = null;
+	static SqlSessionFactory m_ssf = null;
 	static SqlSessionFactory c_ssf = null;
 	
 	static {
@@ -24,7 +24,7 @@ public class MySqlSessionFactory {
 			e.printStackTrace();
 		}
 
-		ma_ssf = new SqlSessionFactoryBuilder().build(inputStream);
+		m_ssf = new SqlSessionFactoryBuilder().build(inputStream);
 	}
 	
 	static {
@@ -48,7 +48,7 @@ public class MySqlSessionFactory {
 	
 	// SqlSession 반환
 	public static SqlSession getMarkanySqlSession() {
-		SqlSession session = ma_ssf.openSession();
+		SqlSession session = m_ssf.openSession();
 		
 		return session;
 	}

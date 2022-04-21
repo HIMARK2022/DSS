@@ -3,10 +3,11 @@ package com.himark.service;
 import org.apache.ibatis.session.SqlSession;
 
 import com.himark.dao.InfoDAO;
-import com.himark.data.Info;
 import com.himark.dss.MySqlSessionFactory;
+import com.himark.vo.InfoVO;
 
 public class InfoService {
+	
 	private InfoDAO infoDao = InfoDAO.getInstance();
 	
 	public int delete() {
@@ -18,13 +19,13 @@ public class InfoService {
 			session.commit();
 			
 		} finally {
-			session.close(); // 세션 닫기
+			session.close();
 		}
 		
 		return deleteCount;
 	}
 	
-	public int insert(Info info) {
+	public int insert(InfoVO info) {
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int insertCount = 0;
 		
@@ -33,9 +34,10 @@ public class InfoService {
 			session.commit();
 			
 		} finally {
-			session.close(); // 세션 닫기
+			session.close();
 		}
 		
 		return insertCount;
 	}
+	
 }

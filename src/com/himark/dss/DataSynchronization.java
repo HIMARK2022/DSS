@@ -5,20 +5,20 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.LinkedList;
 import java.util.Locale;
 
-import com.himark.data.Info;
-import com.himark.excel.ExcelProcess;
+import com.himark.service.ClientService;
+import com.himark.service.MarkanyService;
+import com.himark.vo.InfoVO;
 
 public class DataSynchronization {
+
 	public static void main(String[] args) {
 		
 		// 로그 파일 생성
 		String path = "C:" + File.separator + "DSS" + File.separator + "DSS_LOG"; // 폴더 경로
 		CreateLog.createFolder(path);
 		File file = CreateLog.createFile(path);
-		
 		
 		try {
 			FileWriter fw = new FileWriter(file);
@@ -33,54 +33,35 @@ public class DataSynchronization {
 			writer.write(startTime + "인사연동 시작");
 			writer.newLine();
 			
-			// 프로퍼티 파일 읽기
-			String type = DataProcess.getProperty("type"); // DB인지 파일인지 타입 판별
-			System.out.println(type);
+			// DB인지 CSV인지 판별
+			String type = DataProcess.getProperty("type");
 			
-			String[] user = new String[6];
-			String[] pos = new String[2];
-			String[] duty = new String[2];
-			String[] dept = new String[3];
+			MarkanyService markanyService = new MarkanyService();
+			ClientService clientService = null;
 			
-			user[0] = DataProcess.getProperty("user.user_id");
-			user[1] = DataProcess.getProperty("user.user_name");
-			user[2] = DataProcess.getProperty("user.pos_id");
-			user[3] = DataProcess.getProperty("user.duty_id");
-			user[4] = DataProcess.getProperty("user.dept_id");
-			user[5] = DataProcess.getProperty("user.authority_code");
+			String[] tempTables = null;
 			
-			pos[0] = DataProcess.getProperty("pos.pos_id");
-			pos[1] = DataProcess.getProperty("pos.pos_name");
-			
-			duty[0] = DataProcess.getProperty("duty.duty_id");
-			duty[1] = DataProcess.getProperty("duty.duty_name");
-			
-			dept[0] = DataProcess.getProperty("dept.dept_id");
-			dept[1] = DataProcess.getProperty("dept.dept_name");
-			dept[2] = DataProcess.getProperty("dept.upper_dept_id");
-			
-			
-			// 프로퍼티에서 파일 이름 가져옴
-			if("CSV".equals(type)) {
-				// CSV 파일 읽어오기
-				LinkedList<String> filename = new LinkedList<String>();
-				String filepath = MySqlSessionFactory.getClientSqlSessionFactory().getConfiguration().getVariables().getProperty("filepath");
-
-				filename = DataProcess.getPropertyFile("filename");
-
-				for (int i = 0; i < filename.size(); i++) {
-					System.out.println("\nFilePath: " + filepath + filename.get(i) + ".csv");
-					ExcelProcess.csvProcess(filepath, filename.get(i));
-				}
+			if("DB".equals(type)) {
+				clientService = new ClientService();
+				
+				// temp1 생성 (그대로 복사)
+				tempTables = DataProcess.getProperties("tablename");
+				DataProcess.copyDB(tempTables, markanyService, clientService);
+				
+			} else {
+				
+				// temp1 생성 (그대로 복사)
+				String filePath = DataProcess.getProperty("filepath");
+				tempTables = DataProcess.getProperties("filename");
+				DataProcess.copyCSV(tempTables, filePath, markanyService);
 				
 			}
 			
-			
-			// 고객사 데이터를 마크애니 DB의 temp 테이블에 저장
-			DataProcess.saveTempPos(pos);
-			DataProcess.saveTempDuty(duty);
-			DataProcess.saveTempDept(dept);
-			DataProcess.saveTempUser(user);
+			// temp2 (마크애니와 구조 일치시키기)
+			DataProcess.saveTempPos();
+			DataProcess.saveTempDuty();
+			DataProcess.saveTempDept();
+			DataProcess.saveTempUser();
 			
 			writer.write("-------------------------------------------------------------------");
 			writer.newLine();
@@ -163,13 +144,13 @@ public class DataSynchronization {
 			
 			writer.close();
 			
-			DataProcess.insertInfo(new Info(userInsertCount, userUpdateCount, userDeleteCount, 
-								            deptInsertCount, deptUpdateCount, deptDeleteCount,
-								            st, ft));
+			DataProcess.insertInfo(new InfoVO(userInsertCount, userUpdateCount, userDeleteCount, 
+								              deptInsertCount, deptUpdateCount, deptDeleteCount,
+								              st, ft));
 			
 		} catch (IOException e) {
 			
 		}
 	}
-
+	
 }

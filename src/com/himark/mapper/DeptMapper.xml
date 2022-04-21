@@ -2,58 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="dept">
-
-	<resultMap type="com.himark.data.Dept" id="deptMap">
-		<result property="deptId" column="dept_id" />
-		<result property="deptName" column="dept_name" />
-		<result property="upperDeptId" column="upper_dept_id" />
-	</resultMap>
 	
-	<!-- temp 테이블에 insert -->
-	<insert id="insertTempId">
-		insert into temp_dept(dept_id) select ${dept.dept_id} from ${schema}.${table}
-	</insert>
-	
-	<update id="insertTempName">
-		update temp_dept
-		inner join ${schema}.${table}
-		on temp_dept.dept_id = ${schema}.${dept.dept_id}
-		set temp_dept.dept_name = ${schema}.${dept.dept_name}
-	</update>
-	
-	<update id="insertTempUpperId">
-		update temp_dept
-		inner join ${schema}.${table}
-		on temp_dept.dept_id = ${schema}.${dept.dept_id}
-		set temp_dept.upper_dept_id = ${schema}.${dept.upper_dept_id}
-	</update>
-	
-	<!-- temp 테이블 비우기 -->
 	<delete id="deleteTemp">
-		delete from temp_dept
+		DELETE FROM temp_dept
 	</delete>
 	
+	<insert id="insertTemp" parameterType="com.himark.vo.JoinVO">
+		INSERT INTO temp_dept
+		SELECT ${dept.dept_id},
+		       ${dept.dept_name},
+		       ${dept.upper_dept_id}
+		FROM ${defaultTable}
+		<foreach collection="joinTables" item="table" separator=" ">
+			LEFT JOIN ${table}
+			ON ${dept.dept_id} = ${table}.${defaultColumn}
+		</foreach>
+	</insert>
+	
 	<insert id="insertDept">
-		insert into dept
-		select dept_id, dept_name, upper_dept_id from temp_dept 
-		where dept_id not in (select dept_id from dept)
+		INSERT INTO dept
+		SELECT dept_id, dept_name, upper_dept_id FROM temp_dept 
+		WHERE dept_id NOT IN (SELECT dept_id FROM dept)
 	</insert>
 	
 	<delete id="deleteDept">
-		delete from dept 
-		where dept_id not in (select dept_id from temp_dept)
+		DELETE FROM dept 
+		WHERE dept_id NOT IN (SELECT dept_id FROM temp_dept)
 	</delete>
 	
 	<update id="updateDept">
-		update dept
-		inner join temp_dept
-		on dept.dept_id = temp_dept.dept_id
+		UPDATE dept
+		INNER JOIN temp_dept
+		ON dept.dept_id = temp_dept.dept_id
 		<set>
 			dept.dept_name = temp_dept.dept_name,
 			dept.upper_dept_id = temp_dept.upper_dept_id
 		</set>
-		where dept.dept_name != temp_dept.dept_name
-			  or dept.upper_dept_id != temp_dept.upper_dept_id;
+		WHERE dept.dept_name != temp_dept.dept_name
+		OR dept.upper_dept_id != temp_dept.upper_dept_id
 	</update>
 	
 </mapper>

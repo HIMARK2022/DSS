@@ -2,46 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="duty">
-
-	<resultMap type="com.himark.data.Duty" id="dutyMap">
-		<result property="dutyId" column="duty_id"/>
-		<result property="dutyName" column="duty_name"/>
-	</resultMap>
 	
-	<!-- temp 테이블에 insert -->
-	<insert id="insertTempId">
-		insert into temp_duty(duty_id) select ${duty.duty_id} from ${schema}.${table}
-	</insert>
-	
-	<update id="insertTempName">
-		update temp_duty
-		inner join ${schema}.${table}
-		on temp_duty.duty_id = ${schema}.${duty.duty_id}
-		set temp_duty.duty_name = ${schema}.${duty.duty_name}
-	</update>
-	
-	<!-- temp 테이블 비우기 -->
 	<delete id="deleteTemp">
-		delete from temp_duty
+		DELETE FROM temp_duty
 	</delete>
 	
+	<insert id="insertTemp" parameterType="com.himark.vo.JoinVO">
+		INSERT INTO temp_duty
+		SELECT ${duty.duty_id},
+		       ${duty.duty_name}
+		FROM ${defaultTable}
+		<foreach collection="joinTables" item="table" separator=" ">
+			LEFT JOIN ${table}
+			ON ${duty.duty_id} = ${table}.${defaultColumn}
+		</foreach>
+	</insert>
+	
 	<insert id="insertDuty">
-		insert into duty 
-		select duty_id, duty_name from temp_duty 
-		where duty_id not in (select duty_id from duty)
+		INSERT INTO duty 
+		SELECT duty_id, duty_name FROM temp_duty 
+		WHERE duty_id NOT IN (SELECT duty_id FROM duty)
 	</insert>
 	
 	<delete id="deleteDuty">
-		delete from duty 
-		where duty_id not in (select duty_id from temp_duty)
+		DELETE FROM duty 
+		WHERE duty_id NOT IN (SELECT duty_id FROM temp_duty)
 	</delete>
 	
 	<update id="updateDuty">
-		update duty
-		inner join temp_duty
-		on duty.duty_id = temp_duty.duty_id
-		set duty.duty_name = temp_duty.duty_name
-		where duty.duty_name != temp_duty.duty_name;
+		UPDATE duty
+		INNER JOIN temp_duty
+		ON duty.duty_id = temp_duty.duty_id
+		SET duty.duty_name = temp_duty.duty_name
+		WHERE duty.duty_name != temp_duty.duty_name
 	</update>
 	
 </mapper>

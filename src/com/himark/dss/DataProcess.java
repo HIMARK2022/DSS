@@ -1,167 +1,309 @@
 package com.himark.dss;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.LinkedList;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 
-import com.himark.data.Info;
-import com.himark.data.User;
+import com.himark.service.ClientService;
 import com.himark.service.DeptService;
 import com.himark.service.DutyService;
 import com.himark.service.InfoService;
 import com.himark.service.ManagerService;
+import com.himark.service.MarkanyService;
 import com.himark.service.PosService;
 import com.himark.service.UserService;
+import com.himark.vo.InfoVO;
+import com.himark.vo.JoinVO;
+import com.himark.vo.UserVO;
 
 public class DataProcess {
 	
-	// 프로퍼티 파일 읽기
+	// 프로퍼티 파일 읽어오기
 	public static String getProperty(String property) {
 		
 		SqlSessionFactory c_ssf = MySqlSessionFactory.getClientSqlSessionFactory();
 		Properties properties = c_ssf.getConfiguration().getVariables();
 		
-		String table = null;
+		String ppt = null;
 		try {
-			table = new String(properties.getProperty(property).getBytes("ISO-8859-1"), "UTF-8").split("\\.")[0];
+			ppt = new String(properties.getProperty(property).getBytes("ISO-8859-1"), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		
-		return table;
+		return ppt;
 	}
 	
-	// 프로퍼티 파일 읽기
-	public static LinkedList<String> getPropertyFile(String property) {
+	public static String getSplitProperty(String property, int index) {
 		
 		SqlSessionFactory c_ssf = MySqlSessionFactory.getClientSqlSessionFactory();
 		Properties properties = c_ssf.getConfiguration().getVariables();
-		LinkedList<String> table = new LinkedList<String>();
-		String[] filelist = properties.getProperty(property).split(",");
 		
+		String ppt = null;
 		try {
-			  for(int i=0; i<filelist.length; i++) {
-				  table.add(new String(properties.getProperty(property).getBytes("ISO-8859-1"), "UTF-8").split(",")[i]);
-			  }
-		   
+			ppt = new String(properties.getProperty(property).getBytes("ISO-8859-1"), "UTF-8").split("\\.")[index];
 		} catch (UnsupportedEncodingException e) {
-		   e.printStackTrace();
+			e.printStackTrace();
 		}
-
 		
-		return table;
+		return ppt;
 	}
 	
+	public static String[] getProperties(String property) {
+		
+		SqlSessionFactory c_ssf = MySqlSessionFactory.getClientSqlSessionFactory();
+		Properties properties = c_ssf.getConfiguration().getVariables();
+		
+		String[] ppts = properties.getProperty(property).split(",");
+		
+		return ppts;
+	}
 	
-	// 고객사 데이터를 마크애니 DB의 temp 테이블에 저장
-	public static void saveTempUser(String[] table) {
+	public static void copyDB(String[] tempTables, MarkanyService markanyService, ClientService clientService) {
+		
+		Map<String, String> tables = new HashMap<String, String>();
+		
+		for(String tempTable : tempTables) {
+			String originTable = tempTable.substring(2);
+			
+			tables.put("originTable", originTable);
+			tables.put("tempTable", tempTable);
+			
+			markanyService.dropTable(tempTable);
+			clientService.createTable(tables);
+		}
+	}
+	
+	public static void copyCSV(String[] tempTables, String filePath, MarkanyService markanyService) {
+		
+		for(String tempTable : tempTables) {
+			
+			List<String> column = new ArrayList<String>();
+			BufferedReader br = null;
+			String var = "";
+			String line = "";
+			
+			// 테이블 삭제
+			markanyService.dropTable(tempTable);
+			
+			String fileName = tempTable.substring(2);
+			
+			try {
+				br = Files.newBufferedReader(Paths.get(filePath + "/" + fileName + ".csv"));
+				Charset.forName("UTF-8");
+				column = Arrays.asList(br.readLine().split(",")); // 컬럼
+
+				for (int i = 0; i < column.size(); i++) {
+					if (i == column.size() - 1) {
+						var += "`" + column.get(i) + "`" + " VARCHAR(100)";
+					} else {
+						var += "`" + column.get(i) + "`" + " VARCHAR(100),";
+					}
+				}
+				
+				String createTable = "CREATE TABLE `" + tempTable + "`(" + var + ")";
+
+				// CREATE TABLE
+				markanyService.createTable(createTable);
+
+				// INSERT
+				List<String> tmpList = new ArrayList<String>();
+				for (int i = 0; i < column.size(); i++) {
+					while ((line = br.readLine()) != null) {
+						String array[] = line.split(",", -1);
+						tmpList = Arrays.asList(array);
+						String insertTable = "INSERT INTO `" + tempTable + "` VALUES (";
+						for (int j = 0; j < column.size(); j++) {
+							if (j == column.size() - 1) {
+								if (tmpList.get(j).equals("")) {
+									insertTable += null;
+								} else {
+									insertTable += "'" + tmpList.get(j) + "'";
+								}
+							} else {
+								if (tmpList.get(j).equals("")) {
+									insertTable += null + ",";
+								} else {
+									insertTable += "'" + tmpList.get(j) + "',";
+								}
+							}
+						}
+						insertTable += ")";
+						markanyService.insertTable(insertTable);
+						System.out.println(insertTable);
+					}
+				}
+
+				System.out.println("데이터 삽입 완료");
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (br != null) {
+						br.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}		
+	}
+	
+	// temp에 구조 맞춰서 저장
+	public static void saveTempUser() {
+		
 		UserService userService = new UserService();
 		
-		int deleteCount = userService.deleteTemp();
-		System.out.println(deleteCount + "건이 temp_user에서 삭제되었습니다.");
+		userService.deleteTemp();
 		
-		int insertCount = 0;
+		// 조인할 때 기준이 되는 테이블과 컬럼
+		String userTable = DataProcess.getSplitProperty("user.user_id", 0);
+		String userColumn = DataProcess.getSplitProperty("user.user_id", 1);
 		
-		if(!table[0].equals("")) {
-			insertCount = userService.insertTempId(table[0]);
-			System.out.println(insertCount + "건이 temp_user의 user_id 컬럼에 추가되었습니다.");
+		// 조인할 테이블
+		List<String> user = new ArrayList<String>();
+		user.add(DataProcess.getSplitProperty("user.user_name", 0));
+		user.add(DataProcess.getSplitProperty("user.pos_id", 0));
+		user.add(DataProcess.getSplitProperty("user.duty_id", 0));
+		user.add(DataProcess.getSplitProperty("user.dept_id", 0));
+		user.add(DataProcess.getSplitProperty("user.authority_code", 0));
+		
+		// 리스트 내 중복 제거
+		HashSet<String> tmpList = new HashSet<String>(user);
+		List<String> userList = new ArrayList<String>(tmpList);
+		
+		// 기준 테이블과 중복되는 테이블 및 존재하지 않는 테이블 제거
+		for(int i = 0; i < userList.size(); i++) {
+			if(userTable.equals(userList.get(i)) || "".equals(userList.get(i))) {
+				userList.remove(i);
+			}
 		}
 		
-		if(!table[1].equals("")) {
-			insertCount = userService.insertTempName(table[1]);
-			System.out.println(insertCount + "건이 temp_user의 user_name 컬럼에 추가되었습니다.");
-		}
-		
-		if(!table[2].equals("")) {
-			insertCount = userService.insertTempPosId(table[2]);
-			System.out.println(insertCount + "건이 temp_user의 pos_id 컬럼에 추가되었습니다.");
-		}
-		
-		if(!table[3].equals("")) {
-			insertCount = userService.insertTempDutyId(table[3]);
-			System.out.println(insertCount + "건이 temp_user의 duty_id 컬럼에 추가되었습니다.");
-		}
-		
-		if(!table[4].equals("")) {
-			insertCount = userService.insertTempDeptId(table[4]);
-			System.out.println(insertCount + "건이 temp_user의 dept_id 컬럼에 추가되었습니다.");
-		}
-		
-		if(!table[5].equals("")) {
-			insertCount = userService.insertTempAc(table[5]);
-			System.out.println(insertCount + "건이 temp_user의 authority_code 컬럼에 추가되었습니다.");
-		}
+		// temp에 넣기
+		JoinVO joinUser = new JoinVO(userTable, userColumn, userList);
+		userService.insertTemp(joinUser);
 		
 		userService.updateTempAc();
 
 	}
 	
-	public static void saveTempPos(String[] table) {
+	public static void saveTempPos() {
+		
 		PosService posService = new PosService();
 		
-		int deleteCount = posService.deleteTemp();
-		System.out.println(deleteCount + "건이 temp_pos에서 삭제되었습니다.");
+		posService.deleteTemp();
 		
-		int insertCount = 0;
+		// 조인할 때 기준이 되는 테이블과 컬럼
+		String posTable = DataProcess.getSplitProperty("pos.pos_id", 0);
+		String posColumn = DataProcess.getSplitProperty("pos.pos_id", 1);
 		
-		if(!table[0].equals("")) {
-			insertCount = posService.insertTempId(table[0]);	
-			System.out.println(insertCount + "건이 temp_pos의 pos_id 컬럼에 추가되었습니다.");
+		// 조인할 테이블
+		List<String> pos = new ArrayList<String>();
+		pos.add(DataProcess.getSplitProperty("pos.pos_name", 0));
+		
+		// 리스트 내 중복 제거
+		HashSet<String> tmpList = new HashSet<String>(pos);
+		List<String> posList = new ArrayList<String>(tmpList);
+		
+		// 기준 테이블과 중복되는 테이블 및 존재하지 않는 테이블 제거
+		for(int i = 0; i < posList.size(); i++) {
+			if(posTable.equals(posList.get(i)) || "".equals(posList.get(i))) {
+				posList.remove(i);
+			}
 		}
 		
-		if(!table[1].equals("")) {
-			insertCount = posService.insertTempName(table[1]);
-			System.out.println(insertCount + "건이 temp_pos의 pos_name 컬럼에 추가되었습니다.");
-		}
+		// temp에 넣기
+		JoinVO joinPos = new JoinVO(posTable, posColumn, posList);
+		posService.insertTemp(joinPos);
+		
 	}
 	
-	public static void saveTempDuty(String[] table) {
+	public static void saveTempDuty() {
+		
 		DutyService dutyService = new DutyService();
 		
-		int deleteCount = dutyService.deleteTemp();
-		System.out.println(deleteCount + "건이 temp_duty에서 삭제되었습니다.");
+		dutyService.deleteTemp();
 		
-		int insertCount = 0;
+		// 조인할 때 기준이 되는 테이블과 컬럼
+		String dutyTable = DataProcess.getSplitProperty("duty.duty_id", 0);
+		String dutyColumn = DataProcess.getSplitProperty("duty.duty_id", 1);
 		
-		if(!table[0].equals("")) {
-			insertCount = dutyService.insertTempId(table[0]);
-			System.out.println(insertCount + "건이 temp_duty의 duty_id 컬럼에 추가되었습니다.");
+		// 조인할 테이블
+		List<String> duty = new ArrayList<String>();
+		duty.add(DataProcess.getSplitProperty("duty.duty_name", 0));
+		
+		// 리스트 내 중복 제거
+		HashSet<String> tmpList = new HashSet<String>(duty);
+		List<String> dutyList = new ArrayList<String>(tmpList);
+		
+		// 기준 테이블과 중복되는 테이블 및 존재하지 않는 테이블 제거
+		for(int i = 0; i < dutyList.size(); i++) {
+			if(dutyTable.equals(dutyList.get(i)) || "".equals(dutyList.get(i))) {
+				dutyList.remove(i);
+			}
 		}
 		
-		if(!table[1].equals("")) {
-			insertCount = dutyService.insertTempName(table[1]);
-			System.out.println(insertCount + "건이 temp_duty의 duty_name 컬럼에 추가되었습니다.");
-		}
+		// temp에 넣기
+		JoinVO joinDuty = new JoinVO(dutyTable, dutyColumn, dutyList);
+		dutyService.insertTemp(joinDuty);
+		
 	}
 	
-	public static void saveTempDept(String[] table) {
+	public static void saveTempDept() {
+		
 		DeptService deptService = new DeptService();
 		
-		int deleteCount = deptService.deleteTemp();
-		System.out.println(deleteCount + "건이 temp_dept에서 삭제되었습니다.");
+		deptService.deleteTemp();
 		
-		int insertCount = 0;
+		// 조인할 때 기준이 되는 테이블과 컬럼
+		String deptTable = DataProcess.getSplitProperty("dept.dept_id", 0);
+		String deptColumn = DataProcess.getSplitProperty("dept.dept_id", 1);
 		
-		if(!table[0].equals("")) {
-			insertCount = deptService.insertTempId(table[0]);
-			System.out.println(insertCount + "건이 temp_dept의 dept_id 컬럼에 추가되었습니다.");
+		// 조인할 테이블
+		List<String> dept = new ArrayList<String>();
+		dept.add(DataProcess.getSplitProperty("dept.dept_name", 0));
+		dept.add(DataProcess.getSplitProperty("dept.upper_dept_id", 0));
+		
+		// 리스트 내 중복 제거
+		HashSet<String> tmpList = new HashSet<String>(dept);
+		List<String> deptList = new ArrayList<String>(tmpList);
+		
+		// 기준 테이블과 중복되는 테이블 및 존재하지 않는 테이블 제거
+		for(int i = 0; i < deptList.size(); i++) {
+			if(deptTable.equals(deptList.get(i)) || "".equals(deptList.get(i))) {
+				deptList.remove(i);
+			}
 		}
 		
-		if(!table[1].equals("")) {
-			insertCount = deptService.insertTempName(table[1]);
-			System.out.println(insertCount + "건이 temp_dept의 dept_name 컬럼에 추가되었습니다.");
+		for(String d : deptList) {
+			System.out.println("[" + d + "]");
 		}
 		
-		if(!table[2].equals("")) {
-			insertCount = deptService.insertTempUpperId(table[2]);
-			System.out.println(insertCount + "건이 temp_dept의 upper_dept_id 컬럼에 추가되었습니다.");
-		}
+		// temp에 넣기
+		JoinVO joinDept = new JoinVO(deptTable, deptColumn, deptList);
+		deptService.insertTemp(joinDept);
+		
 	}
 	
+	// temp와 비교해서 insert/update/delete
 	public static int insertUser() {
+		
 		UserService userService = new UserService();
 		int insertCount = userService.insertUser();
 		
@@ -169,6 +311,7 @@ public class DataProcess {
 	}
 	
 	public static int insertPos() {
+		
 		PosService posService = new PosService();
 		int insertCount = posService.insertPos();
 		
@@ -176,6 +319,7 @@ public class DataProcess {
 	}
 	
 	public static int insertDuty() {
+		
 		DutyService dutyService = new DutyService();
 		int insertCount = dutyService.insertDuty();
 		
@@ -183,6 +327,7 @@ public class DataProcess {
 	}
 	
 	public static int insertDept() {
+		
 		DeptService deptService = new DeptService();
 		int insertCount = deptService.insertDept();
 		
@@ -190,12 +335,14 @@ public class DataProcess {
 	}
 	
 	public static int insertManager() {
+		
 		UserService service = new UserService();
 		ManagerService service_manager = new ManagerService();
-		List<User> list = service.selectUser();
+		List<UserVO> list = service.selectUser();
+		
 		int insertCount = 0;
 		
-		for(User user : list) {
+		for(UserVO user : list) {
 			insertCount += service_manager.insertManager(user.getUserId());
 		}
 		
@@ -203,6 +350,7 @@ public class DataProcess {
 	}
 	
 	public static int deletePos() {
+		
 		PosService service = new PosService();
 		int deleteCount = service.deletePos();
 		
@@ -210,6 +358,7 @@ public class DataProcess {
 	}
 	
 	public static int deleteDuty() {
+		
 		DutyService service = new DutyService();
 		int deleteCount = service.deleteDuty();
 		
@@ -217,6 +366,7 @@ public class DataProcess {
 	}
 
 	public static int deleteDept() {
+		
 		DeptService service = new DeptService();
 		int deleteCount = service.deleteDept();
 		
@@ -224,6 +374,7 @@ public class DataProcess {
 	}
 
 	public static int deleteManager() {
+		
 		ManagerService service = new ManagerService();
 		int deleteCount = service.deleteManager();
 		
@@ -231,6 +382,7 @@ public class DataProcess {
 	}
 	
 	public static int deleteUser() {
+		
 		UserService service = new UserService();
 		int deleteCount = service.deleteUser();
 		
@@ -238,6 +390,7 @@ public class DataProcess {
 	}
 	
 	public static int updateUser() {
+		
 		UserService userService = new UserService();
 		int updateCount = userService.updateUser();
 		
@@ -245,6 +398,7 @@ public class DataProcess {
 	}
 	
 	public static int updatePos() {
+		
 		PosService posService = new PosService();
 		int updateCount = posService.updatePos();
 		
@@ -252,6 +406,7 @@ public class DataProcess {
 	}
 	
 	public static int updateDuty() {
+		
 		DutyService dutyService = new DutyService();
 		int updateCount = dutyService.updateDuty();
 		
@@ -259,15 +414,19 @@ public class DataProcess {
 	}
 	
 	public static int updateDept() {
+		
 		DeptService deptService = new DeptService();
 		int updateCount = deptService.updateDept();
 		
 		return updateCount;
 	}
 	
-	public static int insertInfo(Info info) {
+	// DB에 로그 저장
+	public static int insertInfo(InfoVO info) {
+		
 		InfoService infoService = new InfoService();
 		infoService.delete();
+		
 		int insertCount = infoService.insert(info);
 		
 		return insertCount;

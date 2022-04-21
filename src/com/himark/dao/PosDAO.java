@@ -2,6 +2,8 @@ package com.himark.dao;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.himark.vo.JoinVO;
+
 public class PosDAO {
 	
 	private static PosDAO posDao = new PosDAO();
@@ -10,37 +12,32 @@ public class PosDAO {
 		return posDao;
 	}
 	
-	// temp 테이블에 insert
-	public int insertTempId(SqlSession session, String table) {
-		int insertCount = 0; 
-		insertCount = session.insert("pos.insertTempId", table);
-		
-		return insertCount;
-	}
-	
-	public int insertTempName(SqlSession session, String table) {
-		int insertCount = 0; 
-		insertCount = session.update("pos.insertTempName", table);
-		
-		return insertCount;
-	}
-	
-	// temp 테이블 비우기
 	public int deleteTemp(SqlSession session) {
-		int deleteCount = 0; 
+		
+		int deleteCount = 0;
 		deleteCount = session.delete("pos.deleteTemp");
 		
 		return deleteCount;
 	}
-
+	
+	public int insertTemp(SqlSession session, JoinVO joinPos) {
+		
+		int insertCount = 0;
+		insertCount = session.insert("pos.insertTemp", joinPos);
+		
+		return insertCount;	
+	}
+	
 	public int insertPos(SqlSession session) {
+		
 		int insertCount = 0;
 		insertCount = session.insert("pos.insertPos"); 
 		
 		return insertCount;
 	}
-
-	public int deleteUser(SqlSession session) {
+	
+	public int deletePos(SqlSession session) {
+		
 		int deleteCount = 0; 
 		deleteCount = session.delete("pos.deletePos");
 		
@@ -48,6 +45,7 @@ public class PosDAO {
 	}
 	
 	public int updatePos(SqlSession session) {
+		
 		int updateCount = 0;
 		updateCount = session.update("pos.updatePos");
 		

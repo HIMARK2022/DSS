@@ -4,42 +4,14 @@ import org.apache.ibatis.session.SqlSession;
 
 import com.himark.dao.DutyDAO;
 import com.himark.dss.MySqlSessionFactory;
+import com.himark.vo.JoinVO;
 
 public class DutyService {
-	
-	private DutyDAO dutyDao = DutyDAO.getInstance();
 
-	public int insertTempId(String table) {
-		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
-		int insertCount = 0; // 반환할 값
-		
-		try {
-			insertCount = dutyDao.insertTempId(session, table); // dutyDao에 SqlSession 전송
-			session.commit();
-			
-		} finally {
-			session.close(); // 세션 닫기
-		}
-		
-		return insertCount;
-	}
-	
-	public int insertTempName(String table) {
-		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
-		int insertCount = 0; // 반환할 값
-		
-		try {
-			insertCount = dutyDao.insertTempName(session, table);
-			session.commit();
-			
-		} finally {
-			session.close(); // 세션 닫기
-		}
-		
-		return insertCount;
-	}
+	private DutyDAO dutyDao = DutyDAO.getInstance();
 	
 	public int deleteTemp() {
+		
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int deleteCount = 0;
 		
@@ -54,22 +26,41 @@ public class DutyService {
 		return deleteCount;
 	}
 	
-	public int insertDuty() {
+	public int insertTemp(JoinVO joinDuty) {
+		
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
-		int insertCount = 0; // 반환할 값
+		int insertCount = 0;
 		
 		try {
-			insertCount = dutyDao.insertDuty(session); // dao에 SqlSession 전송
+			insertCount = dutyDao.insertTemp(session, joinDuty);
 			session.commit();
 			
 		} finally {
-			session.close(); // 세션 닫기
+			session.close();
 		}
 		
 		return insertCount;
 	}
-
+	
+	public int insertDuty() {
+		
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int insertCount = 0;
+		
+		try {
+			insertCount = dutyDao.insertDuty(session);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return insertCount;
+		
+	}
+	
 	public int deleteDuty() {
+		
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int deleteCount = 0;
 		
@@ -85,6 +76,7 @@ public class DutyService {
 	}
 	
 	public int updateDuty() {
+		
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		int updateCount = 0;
 		

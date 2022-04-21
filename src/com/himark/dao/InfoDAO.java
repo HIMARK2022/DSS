@@ -2,9 +2,10 @@ package com.himark.dao;
 
 import org.apache.ibatis.session.SqlSession;
 
-import com.himark.data.Info;
+import com.himark.vo.InfoVO;
 
 public class InfoDAO {
+	
 	private static InfoDAO infoDao = new InfoDAO();
 
 	public static InfoDAO getInstance() {
@@ -18,7 +19,7 @@ public class InfoDAO {
 		return deleteCount;
 	}
 	
-	public int insert(SqlSession session, Info info) {
+	public int insert(SqlSession session, InfoVO info) {
 		int insertCount = 0; 
 		insertCount = session.insert("info.insert", info);
 		

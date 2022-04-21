@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="user">
-
-	<resultMap type="com.himark.data.User" id="userMap">
+	
+	<resultMap type="com.himark.vo.UserVO" id="userMap">
 		<result property="userId" column="user_id"/>
 		<result property="userName" column="user_name"/>
 		<result property="posId" column="pos_id"/>
@@ -12,88 +12,64 @@
 		<result property="authorityCode" column="authority_code"/>
 	</resultMap>
 	
-	<!-- temp 테이블에 insert -->
-	<insert id="insertTempId">
-		insert into temp_user(user_id) select ${user.user_id} from ${schema}.${table}
-	</insert>
-	
-	<update id="insertTempName">
-		update temp_user
-		inner join ${schema}.${table}
-		on temp_user.user_id = ${schema}.${user.user_id}
-		set temp_user.user_name = ${schema}.${user.user_name}
-	</update>
-	
-	<update id="insertTempPosId">
-		update temp_user
-		inner join ${schema}.${table}
-		on temp_user.user_id = ${schema}.${user.user_id}
-		set temp_user.pos_id = ${schema}.${user.pos_id}
-	</update>
-	
-	<update id="insertTempDutyId">
-		update temp_user
-		inner join ${schema}.${table}
-		on temp_user.user_id = ${schema}.${user.user_id}
-		set temp_user.duty_id = ${schema}.${user.duty_id}
-	</update>
-	
-	<update id="insertTempDeptId">
-		update temp_user
-		inner join ${schema}.${table}
-		on temp_user.user_id = ${schema}.${user.user_id}
-		set temp_user.dept_id = ${schema}.${user.dept_id}
-	</update>
-	
-	<update id="insertTempAc">
-		update temp_user
-		inner join ${schema}.${table}
-		on temp_user.user_id = ${schema}.${user.user_id}
-		set temp_user.authority_code = ${schema}.${user.authority_code}
-	</update>
-	
-	<update id="updateTempAc">
-		update temp_user as u
-			left join temp_duty as d
-			on u.duty_id = d.duty_id
-		set u.authority_code = 
-			case
-		    when d.duty_name not like '%장' and d.duty_name != '대표' then 'A1'
-		    when d.duty_name like '%장' then 'A2'
-		    when d.duty_name = '대표' then 'A2'
-		    when d.duty_name is null then 'A3'
-		end;
-	</update>
-	
-	<!-- temp 테이블 비우기 -->
 	<delete id="deleteTemp">
-		delete from temp_user
+		DELETE FROM temp_user
 	</delete>
 	
-	<select id="selectUser" resultMap="userMap">
-		select user_id, user_name, pos_id, duty_id, dept_id, authority_code 
-		from temp_user 
-		where user_id not in (select user_id from user)
-	</select>
-	
-	<insert id="insertUser">
-		insert into user (user_id, user_password, user_name, pos_id, duty_id, dept_id, authority_code, current_state, flag)
-		select user_id, user_id, user_name, pos_id, duty_id, dept_id, authority_code, '재직', '인사연동'
-		from temp_user
-		where user_id not in (select user_id from user)
+	<insert id="insertTemp" parameterType="com.himark.vo.JoinVO">
+		INSERT INTO temp_user
+		SELECT ${user.user_id},
+			   ${user.user_name},
+			   ${user.pos_id},
+			   ${user.duty_id},
+			   ${user.dept_id},
+			   ${user.authority_code}
+		FROM ${defaultTable}
+		<foreach collection="joinTables" item="table" separator=" ">
+			LEFT JOIN ${table}
+			ON ${user.user_id} = ${table}.${defaultColumn}
+		</foreach>
 	</insert>
 	
+	<update id="updateTempAc">
+		UPDATE temp_user as u
+			LEFT JOIN temp_duty as d
+			ON u.duty_id = d.duty_id
+		SET u.authority_code = 
+			CASE
+		    WHEN d.duty_name NOT LIKE '%장' AND d.duty_name != '대표' THEN 'A1'
+		    WHEN d.duty_name LIKE '%장' THEN 'A2'
+		    WHEN d.duty_name = '대표' THEN 'A2'
+		    WHEN d.duty_name IS NULL THEN 'A3'
+		END
+	</update>
+	
+	<insert id="insertUser">
+		INSERT INTO user(user_id, user_password, user_name, pos_id, duty_id, dept_id, authority_code, current_state, flag)
+		SELECT user_id, user_id, user_name, pos_id, duty_id, dept_id, authority_code, '재직', '인사연동'
+		FROM temp_user
+		WHERE user_id NOT IN (SELECT user_id FROM user)
+	</insert>
+	
+	<select id="selectUser" resultMap="userMap">
+		SELECT user_id, user_name, pos_id, duty_id, dept_id, authority_code 
+		FROM temp_user 
+		WHERE user_id NOT IN (SELECT user_id FROM user)
+	</select>
+	
 	<update id="deleteUser">
-		update user set current_state = '퇴직'
-		where flag = '인사연동'
-		and user_id not in (select user_id from temp_user)
-		or user_id = any(select user_id from temp_user where current_state = '퇴직');
+		UPDATE user 
+		SET current_state = '퇴직'
+		WHERE flag = '인사연동'
+		AND current_state = '재직'
+		AND user_id NOT IN (SELECT user_id FROM temp_user)
+		OR user_id = ANY(SELECT user_id FROM temp_user WHERE current_state = '퇴직')
 	</update>
 
 	<update id="updateUser">
-		update user
-		inner join temp_user
-		on user.user_id = temp_user.user_id
+		UPDATE user
+		INNER JOIN temp_user
+		ON user.user_id = temp_user.user_id
 		<set>
 			user.user_name = temp_user.user_name,
 			user.pos_id = temp_user.pos_id,
@@ -101,13 +77,13 @@
 			user.dept_id = temp_user.dept_id,
 			user.authority_code = temp_user.authority_code
 		</set>
-		where user.user_name != temp_user.user_name
-			  or user.pos_id != temp_user.pos_id
-			  or user.duty_id != temp_user.duty_id
-			  or user.dept_id != temp_user.dept_id
-			  or user.authority_code != temp_user.authority_code
-			  and user.current_state = '재직' 
-			  and user.flag = '인사연동';
+		WHERE user.user_name != temp_user.user_name
+		OR user.pos_id != temp_user.pos_id
+		OR user.duty_id != temp_user.duty_id
+		OR user.dept_id != temp_user.dept_id
+		OR user.authority_code != temp_user.authority_code
+		AND user.current_state = '재직' 
+		AND user.flag = '인사연동'
 	</update>
 	
 </mapper>
