@@ -2,6 +2,9 @@ package com.himark.dao;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.himark.vo.CreateVO;
+import com.himark.vo.InsertVO;
+
 public class MarkanyDAO {
 	
 	private static MarkanyDAO markanyDao = new MarkanyDAO();
@@ -16,9 +19,10 @@ public class MarkanyDAO {
 		
 	}
 	
-	public void createTable(SqlSession session, String tempTable) {
+	public void createTable(SqlSession session, CreateVO createTable) {
 		
-		session.update("markany.createTable", tempTable);
+		/* session.update("markany.createTable", tempTable); */
+		session.update("markany.createTable", createTable);
 		
 	}
 	
@@ -30,6 +34,14 @@ public class MarkanyDAO {
 		
 		return insertCount;
 		
+	}
+	
+	public int insertData(SqlSession session, InsertVO insertData) {
+		
+		int insertCount = 0;
+		insertCount = session.insert("markany.insertData", insertData);
+		
+		return insertCount;
 	}
 	
 }

@@ -3,9 +3,16 @@
 
 <mapper namespace="client">
 		
-	<update id="createTable" parameterType="hashmap">
-		CREATE TABLE ${schema}.${tempTable}
-		AS SELECT * FROM ${originTable}
-	</update>
+	<select id="selectColumn" parameterType="String" resultType="String">
+		SELECT COLUMN_NAME
+		FROM INFORMATION_SCHEMA.COLUMNS
+		WHERE TABLE_SCHEMA = '${schema}'
+		AND TABLE_NAME = '${originTable}'
+	</select>
+	
+	<select id="selectData" resultType="hashmap">
+		SELECT *
+		FROM ${originTable}
+	</select>
 	
 </mapper>

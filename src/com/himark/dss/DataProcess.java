@@ -25,7 +25,9 @@ import com.himark.service.ManagerService;
 import com.himark.service.MarkanyService;
 import com.himark.service.PosService;
 import com.himark.service.UserService;
+import com.himark.vo.CreateVO;
 import com.himark.vo.InfoVO;
+import com.himark.vo.InsertVO;
 import com.himark.vo.JoinVO;
 import com.himark.vo.UserVO;
 
@@ -82,8 +84,18 @@ public class DataProcess {
 			tables.put("originTable", originTable);
 			tables.put("tempTable", tempTable);
 			
+			// DROP TABLE
 			markanyService.dropTable(tempTable);
-			clientService.createTable(tables);
+			
+			// CREATE TABLE
+			List<String> columnList = clientService.selectColumn(originTable);
+			markanyService.createTable(new CreateVO(tempTable, columnList));
+						
+			// INSERT
+			List<Map<String, Object>> dataList = clientService.selectData(originTable);
+			Map<String, Object> keyMap = dataList.get(0);
+			markanyService.insertData(new InsertVO(tempTable, keyMap, dataList));
+			
 		}
 	}
 	
@@ -91,12 +103,11 @@ public class DataProcess {
 		
 		for(String tempTable : tempTables) {
 			
-			List<String> column = new ArrayList<String>();
+			List<String> columnList = new ArrayList<String>();
 			BufferedReader br = null;
-			String var = "";
 			String line = "";
 			
-			// 테이블 삭제
+			// DROP TABLE
 			markanyService.dropTable(tempTable);
 			
 			String fileName = tempTable.substring(2);
@@ -104,30 +115,20 @@ public class DataProcess {
 			try {
 				br = Files.newBufferedReader(Paths.get(filePath + "/" + fileName + ".csv"));
 				Charset.forName("UTF-8");
-				column = Arrays.asList(br.readLine().split(",")); // 컬럼
-
-				for (int i = 0; i < column.size(); i++) {
-					if (i == column.size() - 1) {
-						var += "`" + column.get(i) + "`" + " VARCHAR(100)";
-					} else {
-						var += "`" + column.get(i) + "`" + " VARCHAR(100),";
-					}
-				}
-				
-				String createTable = "CREATE TABLE `" + tempTable + "`(" + var + ")";
+				columnList = Arrays.asList(br.readLine().split(",")); // 컬럼
 
 				// CREATE TABLE
-				markanyService.createTable(createTable);
+				markanyService.createTable(new CreateVO(tempTable, columnList));
 
 				// INSERT
 				List<String> tmpList = new ArrayList<String>();
-				for (int i = 0; i < column.size(); i++) {
+				for (int i = 0; i < columnList.size(); i++) {
 					while ((line = br.readLine()) != null) {
 						String array[] = line.split(",", -1);
 						tmpList = Arrays.asList(array);
 						String insertTable = "INSERT INTO `" + tempTable + "` VALUES (";
-						for (int j = 0; j < column.size(); j++) {
-							if (j == column.size() - 1) {
+						for (int j = 0; j < columnList.size(); j++) {
+							if (j == columnList.size() - 1) {
 								if (tmpList.get(j).equals("")) {
 									insertTable += null;
 								} else {

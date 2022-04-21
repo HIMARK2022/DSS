@@ -6,13 +6,29 @@
 	<update id="dropTable" parameterType="String">
 		DROP TABLE IF EXISTS ${tempTable}
 	</update>
-	
-	<update id="createTable">
-		${createTable}
+		
+	<update id="createTable" parameterType="com.himark.vo.CreateVO">
+		CREATE TABLE `${tempTable}`
+		<foreach collection="columnList" item="column" open="(" separator="," close=")">
+			`${column}` VARCHAR(100)
+		</foreach>
 	</update>
 	
 	<insert id="insertTable">
 		${insertTable}
+	</insert>
+	
+	<insert id="insertData" parameterType="com.himark.vo.InsertVO">
+		INSERT INTO ${tempTable}
+		<foreach collection="keyMap" index="key" item="value" open="(" separator="," close=")">
+			${key}
+		</foreach>
+		
+		<foreach collection="dataMapList" index="key" item="item" open="VALUES" separator=",">
+			<foreach collection="item.entrySet()" index="key" item="value" open="(" separator="," close=")">
+				'${value}'
+			</foreach>
+		</foreach>
 	</insert>
 	
 </mapper>

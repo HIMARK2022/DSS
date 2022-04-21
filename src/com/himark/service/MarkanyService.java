@@ -4,6 +4,8 @@ import org.apache.ibatis.session.SqlSession;
 
 import com.himark.dao.MarkanyDAO;
 import com.himark.dss.MySqlSessionFactory;
+import com.himark.vo.CreateVO;
+import com.himark.vo.InsertVO;
 
 public class MarkanyService {
 	
@@ -23,12 +25,12 @@ public class MarkanyService {
 		
 	}
 	
-	public void createTable(String tempTable) {
+	public void createTable(CreateVO createTable) {
 		
 		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
 		
 		try {
-			markanyDao.createTable(session, tempTable); 
+			markanyDao.createTable(session, createTable); 
 			session.commit();
 			
 		} finally {
@@ -54,4 +56,21 @@ public class MarkanyService {
 		
 	}
 	
+	public int insertData(InsertVO insertData) {
+		
+		SqlSession session = MySqlSessionFactory.getMarkanySqlSession();
+		int insertCount = 0;
+		
+		try {
+			insertCount = markanyDao.insertData(session, insertData);
+			session.commit();
+			
+		} finally {
+			session.close();
+		}
+		
+		return insertCount;
+		
+	}
+
 }
